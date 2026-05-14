@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nexaassist-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nexaassist
+      POSTGRES_PASSWORD: nexaassist
+      POSTGRES_DB: nexaassist
+    ports:
+      - "5433:5432"
+    volumes:
+      - nexaassist_pg_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: nexaassist-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  nexaassist_pg_data:
