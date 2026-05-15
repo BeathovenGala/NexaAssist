@@ -22,6 +22,16 @@ const permissions: PermissionSeed[] = [
   { code: 'tenants:read', module: 'tenants', description: 'View tenant profile' },
   { code: 'tenants:update', module: 'tenants', description: 'Update tenant settings' },
   { code: 'roles:read', module: 'roles', description: 'List assignable roles' },
+  {
+    code: 'invitations:create',
+    module: 'invitations',
+    description: 'Create, resend, and revoke invitations',
+  },
+  {
+    code: 'invitations:read',
+    module: 'invitations',
+    description: 'List invitations for tenant',
+  },
   // Portal
   { code: 'portal:access', module: 'portal', description: 'Access customer portal' },
   // Future modules (pre-seeded for RBAC expansion)
@@ -52,6 +62,8 @@ const rolePermissionMap: Record<RoleName, string[]> = {
     'tenants:read',
     'tenants:update',
     'roles:read',
+    'invitations:create',
+    'invitations:read',
     'appointments:create',
     'appointments:read',
     'appointments:update',
@@ -116,6 +128,7 @@ async function main(): Promise<void> {
     prisma.rolePermission.deleteMany(),
     prisma.userRole.deleteMany(),
     prisma.refreshToken.deleteMany(),
+    prisma.invitation.deleteMany(),
     prisma.userCodeCounter.deleteMany(),
     prisma.user.deleteMany(),
     prisma.tenant.deleteMany(),

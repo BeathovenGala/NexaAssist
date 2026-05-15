@@ -202,6 +202,33 @@ export class AuthService {
     return { revoked: updated.count };
   }
 
+  /** Used after invite acceptance — issues tokens without password verification. */
+  async createSessionForUser(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        tenant: true,
+        userRoles: { include: { role: true } },
+      },
+    });
+    if (!user || user.status !== UserStatus.ACTIVE) {
+      throw new UnauthorizedException('User not available');
+    }
+    const refreshTtlDays = Number(
+      this.config.get('REFRESH_TOKEN_TTL_DAYS') ?? 7,
+    );
+    const tokens = await this.issueTokens(
+      user.id,
+      user.email,
+      user.tenantId,
+      refreshTtlDays,
+    );
+    return {
+      user: this.mapUser(user),
+      ...tokens,
+    };
+  }
+
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },

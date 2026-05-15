@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { RolesModule } from './roles/roles.module';
+import { InvitationsModule } from './invitations/invitations.module';
 import { HealthController } from './health/health.controller';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
@@ -36,6 +37,7 @@ import { TenantContextMiddleware } from './common/middleware/tenant-context.midd
     AuthModule,
     TenantsModule,
     RolesModule,
+    InvitationsModule,
   ],
   controllers: [HealthController],
   providers: [
