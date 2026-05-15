@@ -68,6 +68,84 @@ enum JoinRequestStatus {
   REJECTED
 }
 
+enum InventoryItemStatus {
+  ACTIVE
+  LOW
+  OUT_OF_STOCK
+  ARCHIVED
+  EXPIRED
+  DAMAGED
+  RESTRICTED
+}
+
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
+  RETURN
+  TRANSFER
+  APPROVED_REQUEST
+  DAMAGED
+  EXPIRED
+}
+
+enum ReferenceType {
+  APPOINTMENT
+  MANUAL
+  REQUEST
+  TRANSFER
+  EXPIRY
+}
+
+enum InventoryRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FULFILLED
+}
+
+enum RequestPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum InventoryAlertType {
+  LOW_STOCK
+  OUT_OF_STOCK
+  OVERSTOCK
+  DAMAGED
+  EXPIRING
+  HIGH_USAGE
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AlertStatus {
+  ACTIVE
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum InventoryTransactionType {
+  IN
+  OUT
+  ADJUSTMENT
+  TRANSFER
+}
+
+enum InventoryTransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
 model Tenant {
   id               String            @id @default(uuid())
   name             String
@@ -86,6 +164,12 @@ model Tenant {
   recurringAvailabilityRules RecurringAvailabilityRule[]
   blockedSlots     BlockedSlot[]
   joinRequests       TenantJoinRequest[]
+  inventoryCategories InventoryCategory[]
+  inventoryItems      InventoryItem[]
+  stockMovements      StockMovement[]
+  inventoryRequests   InventoryRequest[]
+  inventoryAlerts     InventoryAlert[]
+  inventoryTransactions InventoryTransaction[]
 }
 
 model Invitation {
@@ -133,6 +217,11 @@ model User {
   appointmentHistory     AppointmentHistory[]
   appointmentNotes       AppointmentNote[]
   joinRequests           TenantJoinRequest[]
+  inventoryItemsCreated  InventoryItem[]      @relation("InventoryItemCreatedBy")
+  stockMovementsPerformed StockMovement[]
+  inventoryRequestsCreated InventoryRequest[] @relation("InventoryRequestRequestedBy")
+  inventoryRequestsApproved InventoryRequest[] @relation("InventoryRequestApprovedBy")
+  inventoryTransactionsPerformed InventoryTransaction[]
 
   @@index([tenantId])
   @@index([email])
@@ -362,4 +451,154 @@ model UserCodeCounter {
   tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([scopeKey, prefix])
+}
+
+model InventoryCategory {
+  id          String   @id @default(uuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  items       InventoryItem[]
+
+  @@index([tenantId])
+  @@index([tenantId, deletedAt])
+}
+
+model InventoryItem {
+  id                 String               @id @default(uuid())
+  tenantId           String
+  tenant             Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  categoryId         String?
+  category           InventoryCategory?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  name               String
+  sku                String
+  description        String?
+  unit               String
+  barcode            String?
+  locationId         String?
+  quantity           Int                  @default(0)
+  reservedQuantity   Int                  @default(0)
+  minimumThreshold   Int                  @default(0)
+  maximumThreshold   Int?
+  status             InventoryItemStatus  @default(ACTIVE)
+  isActive           Boolean              @default(true)
+  createdById        String
+  createdBy          User                 @relation("InventoryItemCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  deletedAt          DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  stockMovements     StockMovement[]
+  inventoryRequests  InventoryRequest[]
+  inventoryAlerts    InventoryAlert[]
+  transactionItems   InventoryTransactionItem[]
+
+  @@unique([tenantId, sku])
+  @@index([tenantId])
+  @@index([tenantId, deletedAt])
+  @@index([tenantId, status])
+  @@index([tenantId, categoryId])
+}
+
+model StockMovement {
+  id               String         @id @default(uuid())
+  tenantId         String
+  tenant           Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  itemId           String
+  item             InventoryItem  @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  movementType     MovementType
+  quantity         Int
+  previousQuantity Int
+  newQuantity      Int
+  reason           String?
+  referenceType    ReferenceType?
+  referenceId      String?
+  locationId       String?
+  performedById    String
+  performedBy      User           @relation(fields: [performedById], references: [id], onDelete: Restrict)
+  createdAt        DateTime       @default(now())
+
+  @@index([tenantId])
+  @@index([tenantId, itemId])
+  @@index([tenantId, createdAt])
+  @@index([itemId, createdAt])
+}
+
+model InventoryRequest {
+  id                  String                 @id @default(uuid())
+  tenantId            String
+  tenant              Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  itemId              String
+  item                InventoryItem          @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  requestedById       String
+  requestedBy         User                   @relation("InventoryRequestRequestedBy", fields: [requestedById], references: [id], onDelete: Restrict)
+  quantityRequested   Int
+  approvedQuantity    Int?
+  fulfilledQuantity   Int                    @default(0)
+  priority            RequestPriority        @default(NORMAL)
+  reason              String?
+  status              InventoryRequestStatus @default(PENDING)
+  managerNotes        String?
+  approvedById        String?
+  approvedBy          User?                  @relation("InventoryRequestApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt          DateTime?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@index([itemId])
+}
+
+model InventoryAlert {
+  id        String             @id @default(uuid())
+  tenantId  String
+  tenant    Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  itemId    String
+  item      InventoryItem      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  type      InventoryAlertType
+  severity  AlertSeverity
+  status    AlertStatus        @default(ACTIVE)
+  message   String
+  isRead    Boolean            @default(false)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@index([tenantId, type])
+  @@index([itemId])
+}
+
+model InventoryTransaction {
+  id             String                     @id @default(uuid())
+  tenantId       String
+  tenant         Tenant                     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  type           InventoryTransactionType
+  status         InventoryTransactionStatus @default(PENDING)
+  notes          String?
+  locationId     String?
+  performedById  String
+  performedBy    User                       @relation(fields: [performedById], references: [id], onDelete: Restrict)
+  createdAt      DateTime                   @default(now())
+  updatedAt      DateTime                   @updatedAt
+  items          InventoryTransactionItem[]
+
+  @@index([tenantId])
+  @@index([tenantId, createdAt])
+}
+
+model InventoryTransactionItem {
+  id            String               @id @default(uuid())
+  transactionId String
+  transaction   InventoryTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  itemId        String
+  item          InventoryItem        @relation(fields: [itemId], references: [id], onDelete: Restrict)
+  quantity      Int
+
+  @@index([transactionId])
+  @@index([itemId])
 }

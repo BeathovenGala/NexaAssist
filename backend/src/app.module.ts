@@ -13,6 +13,7 @@ import { AvailabilityModule } from './availability/availability.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { ServiceTypesModule } from './service-types/service-types.module';
 import { JoinRequestsModule } from './join-requests/join-requests.module';
+import { InventoryModule } from './inventory/inventory.module';
 import { HealthController } from './health/health.controller';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
@@ -48,6 +49,7 @@ import { TenantContextMiddleware } from './common/middleware/tenant-context.midd
     AppointmentsModule,
     CalendarModule,
     JoinRequestsModule,
+    InventoryModule,
   ],
   controllers: [HealthController],
   providers: [
