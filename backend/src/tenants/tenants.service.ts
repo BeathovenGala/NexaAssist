@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { RoleName } from '@prisma/client';
-import type { AuthUser } from '../types/auth-user';
+import { RoleName, TenantStatus } from '@prisma/client';import type { AuthUser } from '../types/auth-user';
 import { PrismaService } from '../prisma/prisma.service';
 import { slugify } from '../common/utils/slug.util';
 import type { UpdateTenantDto } from './dto/tenants.dto';
@@ -9,8 +8,21 @@ import type { UpdateTenantDto } from './dto/tenants.dto';
 export class TenantsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getOne(tenantId: string, actor: AuthUser) {
-    if (!actor.roles.includes(RoleName.SUPER_ADMIN)) {
+  async listPublicActive() {
+    return this.prisma.tenant.findMany({
+      where: { status: TenantStatus.ACTIVE },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        businessType: true,
+      },
+      orderBy: { name: 'asc' },
+      take: 500,
+    });
+  }
+
+  async getOne(tenantId: string, actor: AuthUser) {    if (!actor.roles.includes(RoleName.SUPER_ADMIN)) {
       if (!actor.tenantId || actor.tenantId !== tenantId) {
         throw new ForbiddenException('Tenant scope violation');
       }

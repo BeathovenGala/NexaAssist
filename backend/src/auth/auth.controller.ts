@@ -6,6 +6,7 @@ import type { AuthUser } from '../types/auth-user';
 import {
   LoginDto,
   RefreshTokenDto,
+  RegisterCustomerDto,
   RegisterTenantDto,
 } from './dto/auth.dto';
 
@@ -17,6 +18,12 @@ export class AuthController {
   @Post('register/tenant')
   registerTenant(@Body() dto: RegisterTenantDto) {
     return this.auth.registerTenant(dto);
+  }
+
+  @Public()
+  @Post('register/customer')
+  registerCustomer(@Body() dto: RegisterCustomerDto) {
+    return this.auth.registerCustomer(dto);
   }
 
   @Public()

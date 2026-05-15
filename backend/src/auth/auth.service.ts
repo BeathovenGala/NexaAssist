@@ -12,7 +12,7 @@ import { slugify } from '../common/utils/slug.util';
 import { generateRefreshToken, hashToken } from '../common/utils/token.util';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserCodeService } from '../users/user-code.service';
-import type { LoginDto, RegisterTenantDto } from './dto/auth.dto';
+import type { LoginDto, RegisterCustomerDto, RegisterTenantDto } from './dto/auth.dto';
 import type { AccessJwtPayload } from './strategies/jwt.strategy';
 
 @Injectable()
@@ -97,6 +97,57 @@ export class AuthService {
 
     return {
       tenant: this.mapTenant(result.tenant),
+      user: this.mapUser(result.user),
+      ...tokens,
+    };
+  }
+
+  async registerCustomer(dto: RegisterCustomerDto) {
+    const email = dto.email.toLowerCase();
+    const existing = await this.prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      throw new ConflictException('Email already registered');
+    }
+    const rounds = Number(this.config.get('BCRYPT_ROUNDS') ?? 12);
+    const passwordHash = await bcrypt.hash(dto.password, rounds);
+    const refreshTtlDays = Number(
+      this.config.get('REFRESH_TOKEN_TTL_DAYS') ?? 7,
+    );
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      const userCode = await this.userCodes.allocateUnaffiliatedCustomerCode(tx);
+      const customerRole = await tx.role.findUniqueOrThrow({
+        where: { name: RoleName.CUSTOMER },
+      });
+      const user = await tx.user.create({
+        data: {
+          userCode,
+          tenantId: null,
+          email,
+          passwordHash,
+          firstName: dto.firstName.trim(),
+          lastName: dto.lastName?.trim() || null,
+          status: UserStatus.ACTIVE,
+          userRoles: { create: [{ roleId: customerRole.id }] },
+        },
+        include: {
+          tenant: true,
+          userRoles: { include: { role: true } },
+        },
+      });
+      return { user };
+    });
+
+    const tokens = await this.issueTokens(
+      result.user.id,
+      result.user.email,
+      result.user.tenantId,
+      refreshTtlDays,
+    );
+
+    this.logger.info({ userId: result.user.id }, 'Customer registered (pending tenant)');
+
+    return {
       user: this.mapUser(result.user),
       ...tokens,
     };

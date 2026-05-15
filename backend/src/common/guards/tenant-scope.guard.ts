@@ -4,8 +4,10 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { RoleName } from '@prisma/client';
 import type { AuthUser } from '../../types/auth-user';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 /**
  * Ensures route :tenantId (or :id for tenants controller) matches the authenticated user's tenant,
@@ -13,12 +15,20 @@ import type { AuthUser } from '../../types/auth-user';
  */
 @Injectable()
 export class TenantScopeGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
+
   canActivate(context: ExecutionContext): boolean {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return true;
+    }
     const request = context.switchToHttp().getRequest<{
       user?: AuthUser;
       params: Record<string, string>;
-    }>();
-    const user = request.user;
+    }>();    const user = request.user;
     if (!user) {
       throw new ForbiddenException('Unauthorized');
     }

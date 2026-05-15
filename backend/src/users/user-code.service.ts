@@ -42,4 +42,27 @@ export class UserCodeService {
     const seq = String(counter.lastSeq).padStart(3, '0');
     return `${prefix}-${slugPart}-${seq}`;
   }
+
+  /** Customer self-registration before a tenant approves their join request. */
+  async allocateUnaffiliatedCustomerCode(
+    tx: Prisma.TransactionClient,
+  ): Promise<string> {
+    const scopeKey = 'GLOBAL';
+    const prefix = 'CU';
+    const slugPart = 'INV';
+    const counter = await tx.userCodeCounter.upsert({
+      where: {
+        scopeKey_prefix: { scopeKey, prefix },
+      },
+      create: {
+        scopeKey,
+        prefix,
+        lastSeq: 1,
+        tenantId: null,
+      },
+      update: { lastSeq: { increment: 1 } },
+    });
+    const seq = String(counter.lastSeq).padStart(3, '0');
+    return `${prefix}-${slugPart}-${seq}`;
+  }
 }

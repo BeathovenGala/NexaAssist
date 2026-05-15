@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Patch, Body, UseGuards } from '@nestjs/common';
 import { RoleName } from '@prisma/client';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { RequirePermissions } from '../common/decorators/permissions.decorator';
+import { Public } from '../common/decorators/public.decorator';import { RequirePermissions } from '../common/decorators/permissions.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { PermissionsGuard } from '../common/guards/permissions.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -15,8 +15,13 @@ import { UpdateTenantDto } from './dto/tenants.dto';
 export class TenantsController {
   constructor(private readonly tenants: TenantsService) {}
 
-  @Get(':id')
-  @Roles(RoleName.SUPER_ADMIN, RoleName.TENANT_ADMIN)
+  @Public()
+  @Get('public')
+  listPublic() {
+    return this.tenants.listPublicActive();
+  }
+
+  @Get(':id')  @Roles(RoleName.SUPER_ADMIN, RoleName.TENANT_ADMIN)
   @RequirePermissions('tenants:read')
   getOne(@Param('id') id: string, @CurrentUser() user: AuthUser) {
     return this.tenants.getOne(id, user);

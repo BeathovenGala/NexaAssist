@@ -8,6 +8,11 @@ import { UsersModule } from './users/users.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { RolesModule } from './roles/roles.module';
 import { InvitationsModule } from './invitations/invitations.module';
+import { AppointmentsModule } from './appointments/appointments.module';
+import { AvailabilityModule } from './availability/availability.module';
+import { CalendarModule } from './calendar/calendar.module';
+import { ServiceTypesModule } from './service-types/service-types.module';
+import { JoinRequestsModule } from './join-requests/join-requests.module';
 import { HealthController } from './health/health.controller';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
@@ -38,6 +43,11 @@ import { TenantContextMiddleware } from './common/middleware/tenant-context.midd
     TenantsModule,
     RolesModule,
     InvitationsModule,
+    ServiceTypesModule,
+    AvailabilityModule,
+    AppointmentsModule,
+    CalendarModule,
+    JoinRequestsModule,
   ],
   controllers: [HealthController],
   providers: [
