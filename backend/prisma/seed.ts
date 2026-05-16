@@ -4,6 +4,7 @@ import {
   UserStatus,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { seedDemoPersonas } from './seed-demo';
 
 const prisma = new PrismaClient();
 
@@ -91,6 +92,21 @@ const permissions: PermissionSeed[] = [
     module: 'join-requests',
     description: 'List, approve, and reject organization join requests',
   },
+  {
+    code: 'notifications:read',
+    module: 'notifications',
+    description: 'View in-app notifications',
+  },
+  {
+    code: 'notifications:manage',
+    module: 'notifications',
+    description: 'Manage notification settings',
+  },
+  {
+    code: 'operations:read',
+    module: 'operations',
+    description: 'View queue health and failed background jobs',
+  },
 ];
 
 const rolePermissionMap: Record<RoleName, string[]> = {
@@ -132,6 +148,9 @@ const rolePermissionMap: Record<RoleName, string[]> = {
     'tickets:manage',
     'analytics:read',
     'join-requests:manage',
+    'notifications:read',
+    'notifications:manage',
+    'operations:read',
   ],
   [RoleName.DOCTOR]: [
     'users:read',
@@ -149,6 +168,7 @@ const rolePermissionMap: Record<RoleName, string[]> = {
     'chat:use',
     'tickets:read',
     'portal:access',
+    'notifications:read',
   ],
   [RoleName.INVENTORY_MANAGER]: [
     'users:read',
@@ -163,6 +183,8 @@ const rolePermissionMap: Record<RoleName, string[]> = {
     'service-types:read',
     'chat:use',
     'tickets:read',
+    'notifications:read',
+    'operations:read',
   ],
   [RoleName.RECEPTIONIST]: [
     'users:read',
@@ -179,6 +201,7 @@ const rolePermissionMap: Record<RoleName, string[]> = {
     'inventory:request',
     'chat:use',
     'tickets:read',
+    'notifications:read',
   ],
   [RoleName.STAFF]: [
     'users:read',
@@ -206,6 +229,9 @@ const rolePermissionMap: Record<RoleName, string[]> = {
     'calendar:read',
     'chat:use',
     'join-requests:create',
+    'inventory:read',
+    'inventory:request',
+    'notifications:read',
   ],
 };
 
@@ -278,11 +304,12 @@ async function main(): Promise<void> {
 
   await prisma.rolePermission.createMany({ data: rolePermRows });
 
+  const bcryptRounds = Number(process.env.BCRYPT_ROUNDS ?? 12);
+
   const email = process.env.SEED_SUPER_ADMIN_EMAIL;
   const password = process.env.SEED_SUPER_ADMIN_PASSWORD;
   if (email && password) {
-    const rounds = Number(process.env.BCRYPT_ROUNDS ?? 12);
-    const passwordHash = await bcrypt.hash(password, rounds);
+    const passwordHash = await bcrypt.hash(password, bcryptRounds);
     const superAdminRoleId = roleByName.get(RoleName.SUPER_ADMIN);
     if (!superAdminRoleId) {
       throw new Error('SUPER_ADMIN role missing after seed');
@@ -309,6 +336,8 @@ async function main(): Promise<void> {
       },
     });
   }
+
+  await seedDemoPersonas(prisma, roleByName, bcryptRounds);
 }
 
 main()

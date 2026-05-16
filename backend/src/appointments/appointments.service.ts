@@ -16,6 +16,7 @@ import type { AuthUser } from '../types/auth-user';
 import { PrismaService } from '../prisma/prisma.service';
 import { generateAppointmentCode } from '../common/utils/appointment-code.util';
 import {
+  assertFutureSlot,
   assertTenantMembership,
   canViewAllTenantAppointments,
   isCustomerOnly,
@@ -28,6 +29,7 @@ import type {
   CompleteAppointmentDto,
   CreateAppointmentDto,
   ListAppointmentsQueryDto,
+  RejectAppointmentDto,
   RescheduleAppointmentDto,
   UpdateAppointmentDto,
 } from './dto/appointments.dto';
@@ -266,9 +268,7 @@ export class AppointmentsService {
     await this.ensureUsersInTenant(tenantId, [customerId, dto.assignedStaffId]);
     const start = new Date(dto.startTime);
     const end = new Date(dto.endTime);
-    if (!(start < end)) {
-      throw new BadRequestException('startTime must be before endTime');
-    }
+    assertFutureSlot(start, end);
     const timezone = dto.timezone?.trim() || 'UTC';
     const source = (dto.source ??
       AppointmentSource.DASHBOARD) as AppointmentSource;
@@ -340,9 +340,96 @@ export class AppointmentsService {
 
     this.events.emitAppointment({
       type: 'appointment.created',
-      payload: { appointmentId: created.id, tenantId },
+      payload: this.eventPayload(created),
     });
     return this.mapAppointment(created);
+  }
+
+  async confirm(actor: AuthUser, id: string) {
+    const existing = await this.prisma.appointment.findUnique({
+      where: { id },
+      include: appointmentInclude,
+    });
+    if (!existing) {
+      throw new NotFoundException('Appointment not found');
+    }
+    this.assertCanManage(actor, existing, false);
+    if (existing.status !== AppointmentStatus.PENDING) {
+      throw new BadRequestException('Only pending appointments can be confirmed');
+    }
+    const row = await this.prisma.$transaction(async (tx) => {
+      const u = await tx.appointment.update({
+        where: { id },
+        data: { status: AppointmentStatus.CONFIRMED },
+        include: appointmentInclude,
+      });
+      await tx.appointmentHistory.create({
+        data: {
+          appointmentId: id,
+          actionType: 'confirmed',
+          previousValue: { status: existing.status },
+          newValue: { status: AppointmentStatus.CONFIRMED },
+          performedById: actor.id,
+        },
+      });
+      return u;
+    });
+    const payload = this.eventPayload(row);
+    this.events.emitAppointment({
+      type: 'appointment.confirmed',
+      payload: {
+        ...payload,
+        reminderAt: new Date(
+          row.startTime.getTime() - 60 * 60 * 1000,
+        ).toISOString(),
+      },
+    });
+    return this.mapAppointment(row);
+  }
+
+  async reject(actor: AuthUser, id: string, dto: RejectAppointmentDto) {
+    const existing = await this.prisma.appointment.findUnique({
+      where: { id },
+      include: appointmentInclude,
+    });
+    if (!existing) {
+      throw new NotFoundException('Appointment not found');
+    }
+    this.assertCanManage(actor, existing, false);
+    if (existing.status !== AppointmentStatus.PENDING) {
+      throw new BadRequestException('Only pending appointments can be rejected');
+    }
+    const row = await this.prisma.$transaction(async (tx) => {
+      const u = await tx.appointment.update({
+        where: { id },
+        data: {
+          status: AppointmentStatus.REJECTED,
+          cancellationReason: dto.reason?.trim() ?? 'Declined by provider',
+        },
+        include: appointmentInclude,
+      });
+      await tx.appointmentHistory.create({
+        data: {
+          appointmentId: id,
+          actionType: 'rejected',
+          previousValue: { status: existing.status },
+          newValue: {
+            status: AppointmentStatus.REJECTED,
+            cancellationReason: u.cancellationReason,
+          },
+          performedById: actor.id,
+        },
+      });
+      return u;
+    });
+    this.events.emitAppointment({
+      type: 'appointment.rejected',
+      payload: {
+        ...this.eventPayload(row),
+        reason: row.cancellationReason,
+      },
+    });
+    return this.mapAppointment(row);
   }
 
   async update(actor: AuthUser, id: string, dto: UpdateAppointmentDto) {
@@ -359,8 +446,8 @@ export class AppointmentsService {
     }
     const start = dto.startTime ? new Date(dto.startTime) : existing.startTime;
     const end = dto.endTime ? new Date(dto.endTime) : existing.endTime;
-    if (!(start < end)) {
-      throw new BadRequestException('startTime must be before endTime');
+    if (dto.startTime || dto.endTime) {
+      assertFutureSlot(start, end);
     }
     const prev = {
       title: existing.title,
@@ -404,9 +491,6 @@ export class AppointmentsService {
           ...(dto.startTime !== undefined ? { startTime: start } : {}),
           ...(dto.endTime !== undefined ? { endTime: end } : {}),
           ...(dto.timezone !== undefined ? { timezone: dto.timezone } : {}),
-          ...(dto.status !== undefined
-            ? { status: dto.status as AppointmentStatus }
-            : {}),
           ...(dto.notes !== undefined ? { notes: dto.notes } : {}),
         },
         include: appointmentInclude,
@@ -474,7 +558,7 @@ export class AppointmentsService {
     });
     this.events.emitAppointment({
       type: 'appointment.cancelled',
-      payload: { appointmentId: id, tenantId: existing.tenantId },
+      payload: this.eventPayload(row),
     });
     return this.mapAppointment(row);
   }
@@ -493,9 +577,7 @@ export class AppointmentsService {
     }
     const start = new Date(dto.startTime);
     const end = new Date(dto.endTime);
-    if (!(start < end)) {
-      throw new BadRequestException('startTime must be before endTime');
-    }
+    assertFutureSlot(start, end);
     const timezone = dto.timezone?.trim() ?? existing.timezone;
 
     const newAppt = await this.prisma.$transaction(async (tx) => {
@@ -640,6 +722,22 @@ export class AppointmentsService {
       payload: { appointmentId: id, tenantId: existing.tenantId },
     });
     return this.mapAppointment(row);
+  }
+
+  private eventPayload(
+    row: Prisma.AppointmentGetPayload<{ include: typeof appointmentInclude }>,
+  ): Record<string, unknown> {
+    return {
+      appointmentId: row.id,
+      tenantId: row.tenantId,
+      appointmentCode: row.appointmentCode,
+      customerId: row.customerId,
+      assignedStaffId: row.assignedStaffId,
+      customerEmail: row.customer.email,
+      title: row.title,
+      startTime: row.startTime.toISOString(),
+      endTime: row.endTime.toISOString(),
+    };
   }
 
   private mapAppointment(

@@ -21,12 +21,14 @@ import type {
   RejectRequestDto,
 } from './dto/inventory.dto';
 import { InventoryMovementsService } from './inventory-movements.service';
+import { InventoryEventsService } from './inventory-events.service';
 
 @Injectable()
 export class InventoryRequestsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly movements: InventoryMovementsService,
+    private readonly inventoryEvents: InventoryEventsService,
   ) {}
 
   async list(actor: AuthUser, query: ListRequestsQueryDto) {
@@ -119,6 +121,14 @@ export class InventoryRequestsService {
             userCode: true,
           },
         },
+      },
+    });
+    this.inventoryEvents.emitInventory({
+      type: 'inventory.request.created',
+      payload: {
+        tenantId,
+        requestId: row.id,
+        itemId: row.itemId,
       },
     });
     return this.mapRequest(row);

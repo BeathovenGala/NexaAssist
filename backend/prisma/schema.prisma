@@ -37,10 +37,33 @@ enum InviteStatus {
 enum AppointmentStatus {
   PENDING
   CONFIRMED
+  REJECTED
   COMPLETED
   CANCELLED
   RESCHEDULED
   NO_SHOW
+}
+
+enum NotificationType {
+  APPOINTMENT
+  INVENTORY
+  REQUEST
+  SYSTEM
+  SECURITY
+  REMINDER
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+  ARCHIVED
 }
 
 enum AppointmentSource {
@@ -170,6 +193,7 @@ model Tenant {
   inventoryRequests   InventoryRequest[]
   inventoryAlerts     InventoryAlert[]
   inventoryTransactions InventoryTransaction[]
+  notifications         Notification[]
 }
 
 model Invitation {
@@ -222,9 +246,43 @@ model User {
   inventoryRequestsCreated InventoryRequest[] @relation("InventoryRequestRequestedBy")
   inventoryRequestsApproved InventoryRequest[] @relation("InventoryRequestApprovedBy")
   inventoryTransactionsPerformed InventoryTransaction[]
+  notifications                  Notification[]
 
   @@index([tenantId])
   @@index([email])
+}
+
+model Notification {
+  id        String               @id @default(uuid())
+  tenantId  String
+  tenant    Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  message   String
+  priority  NotificationPriority @default(NORMAL)
+  status    NotificationStatus   @default(UNREAD)
+  actionUrl String?
+  metadata  Json?
+  dedupeKey String?
+  readAt    DateTime?
+  createdAt DateTime             @default(now())
+
+  @@unique([tenantId, userId, dedupeKey])
+  @@index([tenantId, userId, status, createdAt])
+  @@index([tenantId, userId, createdAt])
+}
+
+model NotificationDelivery {
+  id        String   @id @default(uuid())
+  tenantId  String
+  dedupeKey String
+  channel   String
+  sentAt    DateTime @default(now())
+
+  @@unique([tenantId, dedupeKey, channel])
+  @@index([tenantId])
 }
 
 model TenantJoinRequest {

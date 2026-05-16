@@ -18,6 +18,7 @@ import {
   CompleteAppointmentDto,
   CreateAppointmentDto,
   ListAppointmentsQueryDto,
+  RejectAppointmentDto,
   RescheduleAppointmentDto,
   UpdateAppointmentDto,
 } from './dto/appointments.dto';
@@ -56,6 +57,22 @@ export class AppointmentsController {
   @RequirePermissions('appointments:read')
   findOne(@CurrentUser() actor: AuthUser, @Param('id') id: string) {
     return this.appointments.findOne(actor, id);
+  }
+
+  @Patch(':id/confirm')
+  @RequirePermissions('appointments:update')
+  confirm(@CurrentUser() actor: AuthUser, @Param('id') id: string) {
+    return this.appointments.confirm(actor, id);
+  }
+
+  @Patch(':id/reject')
+  @RequirePermissions('appointments:update')
+  reject(
+    @CurrentUser() actor: AuthUser,
+    @Param('id') id: string,
+    @Body() dto: RejectAppointmentDto,
+  ) {
+    return this.appointments.reject(actor, id, dto);
   }
 
   @Patch(':id/cancel')

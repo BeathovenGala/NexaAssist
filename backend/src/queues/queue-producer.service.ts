@@ -1,0 +1,117 @@
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Queue } from 'bullmq';
+import {
+  ALL_QUEUE_NAMES,
+  DEFAULT_JOB_OPTIONS,
+  PRIORITY_MAP,
+  QUEUE_NAMES,
+  type JobPriority,
+  type QueueName,
+} from './queue-names';
+import type {
+  CreateNotificationJobPayload,
+  InventoryNotifyJobPayload,
+  ProcessReminderJobPayload,
+  ScheduleReminderJobPayload,
+  SendEmailJobPayload,
+  SystemCleanupJobPayload,
+} from './queue-job.types';
+
+@Injectable()
+export class QueueProducerService implements OnModuleDestroy {
+  private readonly logger = new Logger(QueueProducerService.name);
+  private readonly queues = new Map<QueueName, Queue>();
+
+  constructor(private readonly config: ConfigService) {
+    const redisUrl =
+      this.config.get<string>('REDIS_URL') ?? 'redis://localhost:6379';
+    for (const name of ALL_QUEUE_NAMES) {
+      this.queues.set(
+        name,
+        new Queue(name, {
+          connection: { url: redisUrl },
+          defaultJobOptions: DEFAULT_JOB_OPTIONS,
+        }),
+      );
+    }
+  }
+
+  async onModuleDestroy(): Promise<void> {
+    await Promise.all(
+      [...this.queues.values()].map((q) => q.close()),
+    );
+  }
+
+  getQueue(name: QueueName): Queue {
+    const q = this.queues.get(name);
+    if (!q) {
+      throw new Error(`Unknown queue: ${name}`);
+    }
+    return q;
+  }
+
+  private async add<T extends { tenantId: string; priority?: JobPriority }>(
+    queueName: QueueName,
+    jobName: string,
+    data: T,
+    opts?: { delay?: number; priority?: JobPriority },
+  ): Promise<void> {
+    const queue = this.getQueue(queueName);
+    const priority = data.priority as JobPriority | undefined;
+    await queue.add(jobName, data, {
+      delay: opts?.delay,
+      priority: opts?.priority
+        ? PRIORITY_MAP[opts.priority]
+        : priority
+          ? PRIORITY_MAP[priority]
+          : PRIORITY_MAP.NORMAL,
+    });
+    this.logger.debug(
+      { queue: queueName, jobName, tenantId: data.tenantId },
+      'Job enqueued',
+    );
+  }
+
+  enqueueNotification(payload: CreateNotificationJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.notifications, 'create-notification', payload, {
+      priority: (payload.priority as JobPriority) ?? 'NORMAL',
+    });
+  }
+
+  enqueueEmail(payload: SendEmailJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.emails, 'send-email', payload, {
+      priority: 'NORMAL',
+    });
+  }
+
+  enqueueScheduleReminder(
+    payload: ScheduleReminderJobPayload,
+    delayMs: number,
+  ): Promise<void> {
+    return this.add(QUEUE_NAMES.appointments, 'schedule-reminder', payload, {
+      delay: delayMs,
+    });
+  }
+
+  enqueueProcessReminder(
+    payload: ProcessReminderJobPayload,
+    delayMs?: number,
+  ): Promise<void> {
+    return this.add(QUEUE_NAMES.appointments, 'process-reminder', payload, {
+      delay: delayMs,
+    });
+  }
+
+  enqueueInventoryNotify(payload: InventoryNotifyJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.inventory, 'inventory-notify', payload, {
+      priority: payload.type === 'alert' ? 'HIGH' : 'NORMAL',
+    });
+  }
+
+  enqueueSystemJob(payload: SystemCleanupJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.system, payload.action, payload, {
+      priority: 'LOW',
+    });
+  }
+}

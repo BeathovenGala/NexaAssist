@@ -74,6 +74,7 @@ export class ListAppointmentsQueryDto {
   @IsIn([
     'PENDING',
     'CONFIRMED',
+    'REJECTED',
     'COMPLETED',
     'CANCELLED',
     'RESCHEDULED',
@@ -130,19 +131,14 @@ export class UpdateAppointmentDto {
   timezone?: string;
 
   @IsOptional()
-  @IsIn([
-    'PENDING',
-    'CONFIRMED',
-    'COMPLETED',
-    'CANCELLED',
-    'RESCHEDULED',
-    'NO_SHOW',
-  ])
-  status?: string;
-
-  @IsOptional()
   @IsString()
   notes?: string | null;
+}
+
+export class RejectAppointmentDto {
+  @IsOptional()
+  @IsString()
+  reason?: string;
 }
 
 export class CancelAppointmentDto {

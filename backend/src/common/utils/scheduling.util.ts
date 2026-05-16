@@ -52,3 +52,22 @@ export function isCustomerOnly(actor: AuthUser): boolean {
     actor.roles.every((r) => r === RoleName.CUSTOMER)
   );
 }
+
+/** Reject booking slots that start in the past (UTC comparison). */
+export function assertFutureSlot(start: Date, end: Date): void {
+  if (!(start < end)) {
+    throw new BadRequestException('startTime must be before endTime');
+  }
+  const now = new Date();
+  if (start < now) {
+    throw new BadRequestException(
+      'Cannot book appointments in the past. Select a future date and time.',
+    );
+  }
+}
+
+/** Clip interval start to now for free-slot generation. */
+export function effectiveSlotStart(from: Date): Date {
+  const now = new Date();
+  return from > now ? from : now;
+}

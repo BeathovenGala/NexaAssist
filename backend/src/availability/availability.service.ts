@@ -23,6 +23,7 @@ import {
 import {
   assertTenantMembership,
   canViewAllTenantAppointments,
+  effectiveSlotStart,
   isCustomerOnly,
   resolveSchedulingTenantId,
 } from '../common/utils/scheduling.util';
@@ -485,10 +486,18 @@ export class AvailabilityService {
     const tenantId = resolveSchedulingTenantId(actor, query.tenantId);
     assertTenantMembership(actor, tenantId);
     await this.assertStaffReadable(actor, query.staffId, tenantId);
-    const from = new Date(query.from);
+    let from = new Date(query.from);
     const to = new Date(query.to);
     if (!(from < to)) {
       throw new BadRequestException('from must be before to');
+    }
+    const now = new Date();
+    if (to <= now) {
+      return [];
+    }
+    from = effectiveSlotStart(from);
+    if (!(from < to)) {
+      return [];
     }
     const durationMs =
       (query.durationMinutes ?? 30) * 60 * 1000;

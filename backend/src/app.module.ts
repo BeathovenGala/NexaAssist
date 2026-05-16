@@ -14,6 +14,10 @@ import { CalendarModule } from './calendar/calendar.module';
 import { ServiceTypesModule } from './service-types/service-types.module';
 import { JoinRequestsModule } from './join-requests/join-requests.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { QueuesModule } from './queues/queues.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { EventsModule } from './events/events.module';
+import { OperationsModule } from './operations/operations.module';
 import { HealthController } from './health/health.controller';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
@@ -50,6 +54,10 @@ import { TenantContextMiddleware } from './common/middleware/tenant-context.midd
     CalendarModule,
     JoinRequestsModule,
     InventoryModule,
+    QueuesModule,
+    NotificationsModule,
+    EventsModule,
+    OperationsModule,
   ],
   controllers: [HealthController],
   providers: [

@@ -15,6 +15,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import type { AuthUser } from '../types/auth-user';
 import { resolveInventoryTenantId } from './inventory-tenant.util';
+import { InventoryEventsService } from './inventory-events.service';
 
 export type ApplyMovementParams = {
   tenantId: string;
@@ -33,7 +34,10 @@ export type ApplyMovementParams = {
 
 @Injectable()
 export class InventoryMovementsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly inventoryEvents: InventoryEventsService,
+  ) {}
 
   computeItemStatus(quantity: number, minimumThreshold: number): InventoryItemStatus {
     if (quantity <= 0) {
@@ -254,7 +258,7 @@ export class InventoryMovementsService {
     if (existing) {
       return;
     }
-    await tx.inventoryAlert.create({
+    const alert = await tx.inventoryAlert.create({
       data: {
         tenantId: args.tenantId,
         itemId: args.itemId,
@@ -262,6 +266,14 @@ export class InventoryMovementsService {
         severity: args.severity,
         status: AlertStatus.ACTIVE,
         message: args.message,
+      },
+    });
+    this.inventoryEvents.emitInventory({
+      type: 'inventory.alert.created',
+      payload: {
+        tenantId: args.tenantId,
+        alertId: alert.id,
+        itemId: args.itemId,
       },
     });
   }
