@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api, persistTokens } from "@/lib/api";
+import { apiErrorMessage } from "@/lib/apiEnvelope";
 import { useAuth, defaultDashboardPath } from "@/lib/auth";
 import { useAuthModal, type RegisterModalMode } from "@/lib/auth-modal";
 import { AuthField } from "@/components/auth/AuthField";
@@ -93,7 +94,7 @@ export function RegisterFormContent({ mode, onModeChange }: RegisterFormContentP
       close();
       router.push(defaultDashboardPath(u.roles, u.tenantId));
     } catch (err: unknown) {
-      setError(extractErr(err));
+      setError(apiErrorMessage(err, "Registration failed"));
     } finally {
       setLoading(false);
     }
@@ -135,7 +136,7 @@ export function RegisterFormContent({ mode, onModeChange }: RegisterFormContentP
       close();
       router.push(defaultDashboardPath(u.roles, u.tenantId));
     } catch (err: unknown) {
-      setError(extractErr(err));
+      setError(apiErrorMessage(err, "Registration failed"));
     } finally {
       setLoading(false);
     }
@@ -320,19 +321,3 @@ export function RegisterFormContent({ mode, onModeChange }: RegisterFormContentP
   );
 }
 
-function extractErr(err: unknown): string {
-  if (
-    err &&
-    typeof err === "object" &&
-    "response" in err &&
-    err.response &&
-    typeof err.response === "object" &&
-    "data" in err.response &&
-    err.response.data &&
-    typeof err.response.data === "object" &&
-    "message" in err.response.data
-  ) {
-    return String((err.response.data as { message?: string }).message);
-  }
-  return "Registration failed";
-}
