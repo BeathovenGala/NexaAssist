@@ -5,7 +5,7 @@ import { AppModule } from '../src/app.module';
 
 jest.setTimeout(120000);
 
-describe('Health (e2e)', () => {
+describe('Auth throttle (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -29,15 +29,10 @@ describe('Health (e2e)', () => {
     await app.close();
   });
 
-  it('/api/health (GET)', () => {
+  it('returns 401 for invalid login without crashing', () => {
     return request(app.getHttpServer())
-      .get('/api/health')
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.success).toBe(true);
-        expect(res.body.data.status).toBe('ok');
-        expect(res.body.data.checks.database).toBe('ok');
-        expect(res.body.data.checks.redis).toBe('ok');
-      });
+      .post('/api/auth/login')
+      .send({ email: 'nobody@example.com', password: 'wrong-password-xyz' })
+      .expect(401);
   });
 });
