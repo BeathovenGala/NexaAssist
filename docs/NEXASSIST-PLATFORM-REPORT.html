@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NexaAssist — Platform Report</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-card: #f8fafc;
+      --text: #0f172a;
+      --text-strong: #020617;
+      --text-secondary: #334155;
+      --text-muted: #475569;
+      --border: #cbd5e1;
+      --border-strong: #94a3b8;
+      --accent: #4338ca;
+      --accent-light: #eef2ff;
+      --accent-teal: #0f766e;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 11.5pt;
+      font-weight: 450;
+      -webkit-font-smoothing: antialiased;
+    }
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 2px solid var(--accent);
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .top-bar .brand { font-weight: 800; font-size: 1rem; color: var(--accent); }
+    .top-bar .hint { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+    .layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      max-width: 920px;
+      margin: 0 auto;
+      gap: 2rem;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      .toc { display: none; }
+    }
+    .toc {
+      position: sticky;
+      top: 3.5rem;
+      align-self: start;
+      font-size: 9.5pt;
+    }
+    .toc h2 {
+      font-size: 8pt;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 0 0 0.6rem;
+      font-weight: 700;
+    }
+    .toc a {
+      display: block;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.3rem 0 0.3rem 0.6rem;
+      border-left: 2px solid transparent;
+      font-weight: 500;
+    }
+    .toc a:hover { color: var(--accent); border-color: var(--accent); }
+    main { min-width: 0; }
+    .cover {
+      text-align: center;
+      padding: 2rem 0 2.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 3px solid var(--accent);
+    }
+    .cover .badge {
+      font-size: 8pt;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-teal);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .cover h1 {
+      font-size: 28pt;
+      font-weight: 800;
+      color: var(--text-strong);
+      margin: 0 0 0.35rem;
+      letter-spacing: -0.03em;
+    }
+    .cover .tagline {
+      font-size: 13pt;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin: 0 0 1.25rem;
+      font-style: italic;
+    }
+    .cover .lede {
+      max-width: 580px;
+      margin: 0 auto;
+      color: var(--text);
+      font-size: 11pt;
+      line-height: 1.75;
+      text-align: left;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .feature-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.5rem;
+    }
+    .feature-chip strong { display: block; font-size: 9.5pt; color: var(--text-strong); font-weight: 700; }
+    .feature-chip span { font-size: 8pt; color: var(--text-muted); font-weight: 500; }
+    .chapter {
+      margin-bottom: 2.5rem;
+      page-break-inside: avoid;
+    }
+    .chapter-num {
+      font-size: 8pt;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+    .chapter h2 {
+      font-size: 18pt;
+      font-weight: 800;
+      color: var(--text-strong);
+      margin: 0 0 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--accent);
+      line-height: 1.25;
+    }
+    .chapter h3 {
+      font-size: 12pt;
+      font-weight: 700;
+      color: var(--text-strong);
+      margin: 1.5rem 0 0.6rem;
+    }
+    .chapter h4 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin: 1rem 0 0.4rem;
+    }
+    p {
+      margin: 0 0 0.85rem;
+      color: var(--text);
+      font-weight: 450;
+    }
+    p.lead {
+      font-size: 11.5pt;
+      color: var(--text-secondary);
+      font-weight: 500;
+      border-left: 4px solid var(--accent);
+      padding-left: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    strong { color: var(--text-strong); font-weight: 700; }
+    ul, ol {
+      margin: 0 0 1rem;
+      padding-left: 1.35rem;
+      color: var(--text);
+    }
+    li { margin-bottom: 0.35rem; font-weight: 450; }
+    li strong { font-weight: 700; }
+    .callout {
+      background: var(--accent-light);
+      border: 1px solid #c7d2fe;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      padding: 1rem 1.15rem;
+      margin: 1rem 0;
+      font-size: 10.5pt;
+      color: var(--text-strong);
+      font-weight: 500;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5pt;
+      margin: 0.85rem 0 1.25rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 450;
+      vertical-align: top;
+    }
+    th {
+      background: var(--bg-subtle);
+      color: var(--text-strong);
+      font-weight: 700;
+      font-size: 8.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    tbody tr:nth-child(even) td { background: #fafbfc; }
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9pt;
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+    .mermaid {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1rem;
+    }
+    .steps li {
+      counter-increment: step;
+      padding: 0.5rem 0 0.5rem 2.5rem;
+      position: relative;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      width: 1.6rem;
+      height: 1.6rem;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+      font-size: 9pt;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 1.6rem;
+    }
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-muted);
+      font-size: 9pt;
+      font-weight: 500;
+      border-top: 2px solid var(--border);
+      margin-top: 2rem;
+    }
+    @media print {
+      .top-bar, .toc { display: none !important; }
+      .layout { display: block; max-width: 100%; padding: 0; }
+      body { font-size: 10.5pt; }
+      .chapter { page-break-before: auto; page-break-inside: avoid; }
+      .chapter h2 { page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+      .mermaid { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <span class="brand">NexaAssist Platform Report</span>
+    <span class="hint">What we built &amp; how it works</span>
+  </div>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contents">
+      <h2>Contents</h2>
+      <a href="#cover">Overview</a>
+      <a href="#ch1">1. Platform architecture</a>
+      <a href="#ch2">2. Foundation &amp; access</a>
+      <a href="#ch3">3. Registration &amp; QR</a>
+      <a href="#ch4">4. Appointments</a>
+      <a href="#ch5">5. Inventory</a>
+      <a href="#ch6">6. AI Assistant</a>
+      <a href="#ch7">7. Campaigns</a>
+      <a href="#ch8">8. SEO audit</a>
+      <a href="#ch9">9. Supporting modules</a>
+      <a href="#ch10">10. Module connections</a>
+      <a href="#ch11">11. Dashboard map</a>
+    </nav>
+
+    <main>
+      <header class="cover" id="cover">
+        <div class="badge">Platform Report · 2026</div>
+        <h1>NexaAssist</h1>
+        <p class="tagline">Centralized AI-powered business operations</p>
+        <p class="lede">
+          NexaAssist is a <strong>multi-tenant business operations platform</strong>. Each organization (tenant) runs in its own secure workspace with role-based access control. Teams manage <strong>scheduling, inventory, AI-assisted workflows, marketing campaigns, SEO audits, and WhatsApp messaging</strong> from a single dashboard—all modules share the same data model, permissions, and audit trails.
+        </p>
+        <div class="feature-grid">
+          <div class="feature-chip"><strong>Appointments</strong><span>Scheduling &amp; calendar</span></div>
+          <div class="feature-chip"><strong>Inventory</strong><span>Stock &amp; restock</span></div>
+          <div class="feature-chip"><strong>AI Assistant</strong><span>13 operational tools</span></div>
+          <div class="feature-chip"><strong>Campaigns</strong><span>AI copy &amp; posters</span></div>
+          <div class="feature-chip"><strong>SEO Audit</strong><span>Crawl &amp; recommendations</span></div>
+          <div class="feature-chip"><strong>WhatsApp</strong><span>Bulk messaging</span></div>
+        </div>
+      </header>
+
+      <section class="chapter" id="ch1">
+        <div class="chapter-num">Chapter 01</div>
+        <h2>Platform at a glance</h2>
+        <p class="lead">Every feature follows one architecture: the web dashboard calls a secure API, which persists data in PostgreSQL and delegates long-running work to background processors.</p>
+        <p>
+          The <strong>Next.js dashboard</strong> is what staff and customers use day to day. It communicates with a <strong>NestJS API</strong> (all routes under <code>/api</code>), which reads and writes <strong>PostgreSQL</strong>. Work that takes time—appointment reminder emails, SEO site scans, WhatsApp batch sends, campaign execution, and analytics rollups—is queued in <strong>Redis</strong> (BullMQ) and processed by a dedicated <strong>background worker</strong> so the API stays fast and responsive.
+        </p>
+        <div class="mermaid">
+flowchart TB
+  subgraph clients [Users]
+    Web[Next.js Dashboard]
+    Invite[Invite link or QR scan]
+    Join[Customer join page]
+  end
+  subgraph api [NestJS API]
+    Auth[Auth and tenancy]
+    Modules[Feature modules]
+    Chat[Chat orchestrator]
+  end
+  subgraph data [Data and jobs]
+    PG[(PostgreSQL)]
+    Redis[(Redis BullMQ)]
+    Worker[Background worker]
+  end
+  Web --> api
+  Invite --> Web
+  Join --> Web
+  api --> PG
+  api --> Redis
+  Redis --> Worker
+  Worker --> PG
+        </div>
+      </section>
+
+      <section class="chapter" id="ch2">
+        <div class="chapter-num">Chapter 02</div>
+        <h2>Foundation: organizations, users, and access</h2>
+
+        <h3>Organizations (tenants)</h3>
+        <p>Each business is a <strong>tenant</strong> with its own name, URL slug, and configuration. All appointments, inventory records, campaigns, SEO projects, chat sessions, and analytics are <strong>scoped to that tenant</strong>. Users belonging to one organization cannot view or modify another organization’s data.</p>
+
+        <h3>Users and roles</h3>
+        <p>Access is controlled through <strong>roles</strong>. Each role receives a defined set of <strong>permission codes</strong> (for example <code>appointments:read</code>, <code>inventory:write</code>, <code>chat:use</code>). The dashboard only displays navigation items and action buttons that the signed-in user is permitted to use.</p>
+        <table>
+          <thead><tr><th>Role</th><th>Typical responsibility</th></tr></thead>
+          <tbody>
+            <tr><td><strong>SUPER_ADMIN</strong></td><td>Platform-wide administration across all tenants</td></tr>
+            <tr><td><strong>TENANT_ADMIN</strong></td><td>Organization owner; full tenant setup, users, invites, and modules</td></tr>
+            <tr><td><strong>DOCTOR</strong></td><td>Clinical staff; appointments, availability, inventory consumption</td></tr>
+            <tr><td><strong>RECEPTIONIST</strong></td><td>Front desk; booking, calendar, customer-facing scheduling</td></tr>
+            <tr><td><strong>INVENTORY_MANAGER</strong></td><td>Stock control, alerts, restock approvals</td></tr>
+            <tr><td><strong>STAFF</strong></td><td>General operational access</td></tr>
+            <tr><td><strong>CUSTOMER</strong></td><td>End client; books appointments after joining an organization</td></tr>
+          </tbody>
+        </table>
+
+        <h3>User codes</h3>
+        <p>Every account receives a human-readable <strong>user code</strong> for quick identification in the UI and in assistant conversations—for example <code>TA-acme-clinic-001</code> for a tenant administrator, or <code>CU-INV-001</code> for a customer not yet linked to an organization.</p>
+
+        <h3>Sessions and security</h3>
+        <p>Users authenticate with email and password. The API issues a short-lived <strong>JWT access token</strong> and a longer-lived <strong>refresh token</strong>. The dashboard stores these securely and refreshes access automatically. When a session expires, the user must sign in again. Every API request is validated against the user’s tenant and permission list.</p>
+      </section>
+
+      <section class="chapter" id="ch3">
+        <div class="chapter-num">Chapter 03</div>
+        <h2>Getting people into the workspace</h2>
+        <p class="lead">NexaAssist supports multiple onboarding paths so business owners, staff, and customers each enter the platform through the correct door—with optional QR codes for frictionless staff invites.</p>
+
+        <h3>Onboarding paths</h3>
+        <table>
+          <thead><tr><th>Path</th><th>Who uses it</th><th>What happens</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Register organization</strong></td><td>New business administrator</td><td>Creates a new tenant and a <strong>TENANT_ADMIN</strong> account. The admin lands on the dashboard to configure service types, availability, and staff invites.</td></tr>
+            <tr><td><strong>Register customer</strong></td><td>End client</td><td>Creates a <strong>CUSTOMER</strong> account <strong>without</strong> a tenant. The customer must request access to an organization before booking or using most modules.</td></tr>
+            <tr><td><strong>Join organization</strong></td><td>Customer</td><td>Submits a <strong>join request</strong> to a chosen organization. A tenant admin <strong>approves</strong> or rejects on the Join Requests screen. Once approved, the customer is linked and can book appointments.</td></tr>
+            <tr><td><strong>Invite staff (link + QR)</strong></td><td>Tenant admin</td><td>Admin creates an invitation under <strong>Settings → Invites</strong>. The system returns a unique <strong>invite URL</strong> and the dashboard renders a <strong>QR code</strong> in the browser. The invitee scans or opens the link, accepts, and is signed in.</td></tr>
+            <tr><td><strong>Standalone join page</strong></td><td>Customer</td><td>Public <code>/join</code> page combines registration and organization access request in a single flow.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Invite flow with QR code</h3>
+        <p>When an administrator creates an invitation, the API returns a unique tokenized URL. The settings screen generates a <strong>QR code</strong> from that URL client-side (no image stored on the server). The invitee scans the code or taps the link, lands on <code>/invite/[token]</code>, validates the invitation, accepts it, and receives an authenticated session with the assigned role.</p>
+        <div class="mermaid">
+sequenceDiagram
+  participant Admin
+  participant Settings as Settings Invites QR
+  participant Invitee
+  participant API as Invitations API
+  Admin->>Settings: Create invitation
+  Settings->>API: POST invitations
+  API-->>Settings: inviteUrl
+  Settings->>Settings: Generate QR from inviteUrl
+  Invitee->>Invitee: Scan QR or open link
+  Invitee->>API: Validate and accept invitation
+  API-->>Invitee: Session and dashboard access
+        </div>
+        <div class="callout">
+          <strong>QR codes are for staff and customer invites only</strong>—not for appointment check-in at the door. Each appointment has its own reference code (<strong>APT-…</strong>) shown in lists, detail views, and reminder emails.
+        </div>
+
+        <h3>Customer without an organization</h3>
+        <p>Customers who register without a tenant are directed to <strong>Organization access</strong> (<code>/dashboard/pending-tenant</code>) until an administrator approves their join request. Scheduling, inventory, and most other modules remain hidden until the customer is linked.</p>
+
+        <h3>Customer registration sequence</h3>
+        <div class="mermaid">
+flowchart LR
+  A[Register as customer] --> B[Account created]
+  B --> C[Submit join request]
+  C --> D{Admin approves?}
+  D -->|Yes| E[Linked to tenant]
+  E --> F[Book and use modules]
+  D -->|No| G[Wait on pending page]
+        </div>
+      </section>
+
+      <section class="chapter" id="ch4">
+        <div class="chapter-num">Chapter 04</div>
+        <h2>Appointments &amp; scheduling</h2>
+
+        <h3>What it is</h3>
+        <p>End-to-end <strong>appointment lifecycle management</strong> for organizations with multiple staff members: define services, configure availability, book time slots, confirm or reject requests, reschedule, mark complete, and send <strong>automated email reminders</strong> for confirmed bookings.</p>
+
+        <h3>Dashboard screens</h3>
+        <table>
+          <thead><tr><th>Screen</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Appointments</strong></td><td>List and filter all appointments; open detail for actions and history</td></tr>
+            <tr><td><strong>Book Appointment</strong></td><td>Guided booking wizard (service → staff → day → slot)</td></tr>
+            <tr><td><strong>Calendar</strong></td><td>Day, week, and month views with appointments and availability overlays</td></tr>
+            <tr><td><strong>Availability</strong></td><td>Recurring weekly schedules, one-off slots, and leave/blocked periods</td></tr>
+            <tr><td><strong>Service Types</strong></td><td>Services with duration and color; duration drives slot length in booking</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Key capabilities</h3>
+        <ul>
+          <li><strong>Service types</strong> — name, duration in minutes, display color; used when calculating free slots</li>
+          <li><strong>Staff availability</strong> — recurring weekly rules plus individual availability slots; <strong>blocked</strong> windows for leave or unavailability</li>
+          <li><strong>Free slots</strong> — the system computes bookable time windows by subtracting existing appointments and blocked periods from available hours</li>
+          <li><strong>Appointment codes</strong> — every booking receives a unique <code>APT-…</code> reference for staff and customers</li>
+          <li><strong>Status lifecycle</strong> — <code>PENDING</code> → <code>CONFIRMED</code> or <code>REJECTED</code> → <code>COMPLETED</code>, <code>CANCELLED</code>, <code>RESCHEDULED</code>, or <code>NO_SHOW</code></li>
+          <li><strong>Overlap protection</strong> — the same staff member cannot be double-booked for overlapping times</li>
+          <li><strong>History</strong> — full audit trail of status changes and notes</li>
+          <li><strong>Reminders</strong> — after confirmation, background jobs schedule and send reminder emails</li>
+        </ul>
+
+        <h3>How booking works (step by step)</h3>
+        <ol class="steps">
+          <li>User selects a <strong>service type</strong> (determines appointment duration).</li>
+          <li>User selects <strong>bookable staff</strong> for that service.</li>
+          <li>Reception or staff optionally picks a <strong>customer</strong>; customers book for themselves.</li>
+          <li>User picks a <strong>day</strong>; the UI loads <strong>free slots</strong>, existing appointments, and blocked time for that day.</li>
+          <li>User selects a slot and submits → appointment is created as <strong>PENDING</strong>.</li>
+          <li>Authorized staff <strong>confirm</strong> or <strong>reject</strong>; they may later cancel, reschedule, or mark complete.</li>
+        </ol>
+        <div class="mermaid">
+flowchart TD
+  S[Select service type] --> ST[Select staff]
+  ST --> D[Select day]
+  D --> FS[Load free slots]
+  FS --> P[Pick slot]
+  P --> C[Create appointment PENDING]
+  C --> CF{Staff action}
+  CF -->|Confirm| OK[CONFIRMED plus reminders]
+  CF -->|Reject| RJ[REJECTED]
+  OK --> DONE[Complete or cancel later]
+        </div>
+
+        <h3>Permissions (scheduling)</h3>
+        <table>
+          <thead><tr><th>Permission</th><th>Allows</th></tr></thead>
+          <tbody>
+            <tr><td><code>appointments:read</code></td><td>View appointments and calendar</td></tr>
+            <tr><td><code>appointments:create</code></td><td>Book new appointments</td></tr>
+            <tr><td><code>appointments:update</code></td><td>Confirm, reschedule</td></tr>
+            <tr><td><code>appointments:cancel</code></td><td>Cancel appointments</td></tr>
+            <tr><td><code>calendar:read</code></td><td>Calendar day/week/month views</td></tr>
+            <tr><td><code>availability:read</code> / <code>write</code></td><td>View or edit availability and leave</td></tr>
+            <tr><td><code>service-types:read</code> / <code>write</code></td><td>View or manage service types</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="chapter" id="ch5">
+        <div class="chapter-num">Chapter 05</div>
+        <h2>Inventory</h2>
+
+        <h3>What it is</h3>
+        <p><strong>Tenant-scoped stock control</strong> for operational teams: maintain a catalog of items and categories, record every stock movement, receive automatic threshold alerts, and run a formal <strong>restock request</strong> workflow with manager approval before stock is received.</p>
+
+        <h3>Dashboard screens</h3>
+        <table>
+          <thead><tr><th>Screen</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Inventory overview</strong></td><td>Metrics, stock health, recent movements, active alerts, pending requests</td></tr>
+            <tr><td><strong>Items</strong></td><td>Search, filter, create items; open detail for stock actions</td></tr>
+            <tr><td><strong>Categories</strong></td><td>Organize the item catalog</td></tr>
+            <tr><td><strong>Movements</strong></td><td>Complete audit log of stock changes</td></tr>
+            <tr><td><strong>Alerts</strong></td><td>Low stock, out of stock, and overstock notifications</td></tr>
+            <tr><td><strong>Requests</strong></td><td>Restock request queue and approval actions</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Key capabilities</h3>
+        <ul>
+          <li><strong>Items</strong> — SKU unique per tenant, on-hand quantity, reserved quantity, available quantity, minimum threshold</li>
+          <li><strong>Status</strong> — automatically derived (active, low stock, out of stock, and related states)</li>
+          <li><strong>Movements</strong> — <strong>IN</strong> (receive), <strong>OUT</strong> (consume), <strong>ADJUSTMENT</strong> (set absolute quantity)</li>
+          <li><strong>Alerts</strong> — generated when thresholds are crossed; staff acknowledge, resolve, or mark as read</li>
+          <li><strong>Restock requests</strong> — submit → manager approves or rejects → fulfill records stock IN and closes the request</li>
+          <li><strong>Dashboard metrics</strong> — total items, low-stock count, critical alerts, movements today, pending approvals</li>
+        </ul>
+
+        <h3>How stock changes propagate</h3>
+        <div class="mermaid">
+flowchart TD
+  M[Movement IN OUT or ADJUST] --> Q[Update quantity]
+  Q --> ST[Recalculate item status]
+  ST --> A{Threshold crossed?}
+  A -->|Yes| AL[Create or update alert]
+  A -->|No| OK[Done]
+  AL --> N[Notify approvers]
+        </div>
+
+        <h3>Restock request workflow</h3>
+        <ol class="steps">
+          <li>A user with <code>inventory:request</code> creates a <strong>pending</strong> request specifying item and quantity.</li>
+          <li>Users with <code>inventory:approve</code> see <strong>all</strong> requests; others see only their own submissions.</li>
+          <li>An approver <strong>approves</strong> or <strong>rejects</strong> with optional notes.</li>
+          <li>On <strong>fulfill</strong>, the system posts an <strong>IN</strong> movement linked to the approved request and marks the request complete.</li>
+        </ol>
+
+        <h3>Permissions (inventory)</h3>
+        <table>
+          <thead><tr><th>Permission</th><th>Allows</th></tr></thead>
+          <tbody>
+            <tr><td><code>inventory:read</code></td><td>View dashboard, items, movements</td></tr>
+            <tr><td><code>inventory:write</code></td><td>Categories, items, stock IN</td></tr>
+            <tr><td><code>inventory:consume</code></td><td>Stock OUT (consumption)</td></tr>
+            <tr><td><code>inventory:adjust</code></td><td>Quantity adjustments</td></tr>
+            <tr><td><code>inventory:request</code></td><td>Submit restock requests</td></tr>
+            <tr><td><code>inventory:approve</code></td><td>Approve, reject, fulfill; view all requests</td></tr>
+            <tr><td><code>inventory:alerts</code></td><td>Acknowledge and resolve alerts</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="chapter" id="ch6">
+        <div class="chapter-num">Chapter 06</div>
+        <h2>AI assistant (chatbot)</h2>
+
+        <h3>What it is</h3>
+        <p>The <strong>NexaAssist Assistant</strong> is a tenant-scoped conversational interface that answers operational questions and <strong>executes real actions</strong>—booking appointments, checking stock, creating restock requests, sending invites—using the same business rules, validation, and permissions as the rest of the dashboard. It is not a generic external chatbot; it is wired directly into your organization’s data.</p>
+
+        <h3>Where to use it</h3>
+        <p><strong>Dashboard → Assistant</strong> provides chat sessions, full message history, interactive UI cards (slot pickers, booking summaries, inventory search results, confirmation dialogs), and contextual quick-action suggestions.</p>
+
+        <h3>Assistant tools (13)</h3>
+        <p>Each tool is available only when the signed-in user’s role includes the required underlying permission:</p>
+        <table>
+          <thead><tr><th>Tool</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>listBookableStaff</code></td><td>List staff available for booking</td></tr>
+            <tr><td><code>getFreeSlots</code></td><td>Return free slots for a staff member and time range</td></tr>
+            <tr><td><code>countAppointments</code></td><td>Count appointments on a given date</td></tr>
+            <tr><td><code>listTodayAppointments</code></td><td>Summarize today’s appointments</td></tr>
+            <tr><td><code>createAppointment</code></td><td>Create a new appointment (requires confirmation)</td></tr>
+            <tr><td><code>confirmAppointment</code></td><td>Confirm a pending appointment</td></tr>
+            <tr><td><code>cancelAppointment</code></td><td>Cancel by appointment ID</td></tr>
+            <tr><td><code>rescheduleAppointment</code></td><td>Move appointment to new start/end times</td></tr>
+            <tr><td><code>searchInventory</code></td><td>Find items by name or SKU</td></tr>
+            <tr><td><code>createInventoryItem</code></td><td>Add a new catalog item</td></tr>
+            <tr><td><code>createRestockRequest</code></td><td>Submit a restock request</td></tr>
+            <tr><td><code>createUser</code></td><td>Create a tenant user (admin)</td></tr>
+            <tr><td><code>createInvitation</code></td><td>Create a staff or customer invite</td></tr>
+          </tbody>
+        </table>
+
+        <h3>How a message is processed</h3>
+        <div class="mermaid">
+flowchart TD
+  UserMsg[User message] --> Orch[Conversation orchestrator]
+  Orch --> Confirm{Pending confirmation?}
+  Confirm -->|yes| ExecTool[Execute or cancel tool]
+  Confirm -->|no| Agent{Agent mode primary?}
+  Agent -->|yes| OpenRouter[AI agent tool loop]
+  Agent -->|no| Intent[Intent classifier]
+  Intent --> Workflow[Workflow and slot filler]
+  Workflow --> Mutate{Mutating tool?}
+  Mutate -->|yes| Pending[Ask user to confirm]
+  Mutate -->|no| Reply[Assistant reply and cards]
+  OpenRouter --> Reply
+        </div>
+        <ol class="steps">
+          <li>User sends a message in an active <strong>chat session</strong>.</li>
+          <li>The <strong>orchestrator</strong> persists the message and checks whether a prior step is awaiting yes/no <strong>confirmation</strong>.</li>
+          <li>In <strong>primary agent mode</strong>, an AI agent runs a multi-step <strong>tool loop</strong> to fetch data and propose actions.</li>
+          <li>Otherwise an <strong>intent classifier</strong> routes the message into structured <strong>workflows</strong> (for example “book appointment”) that collect required slots step by step.</li>
+          <li><strong>Read-only</strong> tools execute immediately and return structured cards in the chat UI.</li>
+          <li><strong>Mutating</strong> tools require explicit user confirmation before any write occurs.</li>
+          <li>The assistant response is saved with metadata for cards, follow-up suggestions, and audit logging.</li>
+        </ol>
+
+        <h3>Guardrails</h3>
+        <ul>
+          <li><strong>Role-based access</strong> — tools unavailable to a role are never invoked.</li>
+          <li><strong>Explicit confirmation</strong> — creates, cancels, reschedules, inventory writes, and invites need user approval.</li>
+          <li><strong>Tenant scope</strong> — all scheduling and inventory operations respect the user’s organization.</li>
+          <li><strong>Audit trail</strong> — tool calls and outcomes are logged for accountability.</li>
+        </ul>
+        <table>
+          <thead><tr><th>Permission</th><th>Allows</th></tr></thead>
+          <tbody>
+            <tr><td><code>chat:use</code></td><td>Open Assistant and send messages</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="chapter" id="ch7">
+        <div class="chapter-num">Chapter 07</div>
+        <h2>Campaigns</h2>
+
+        <h3>What it is</h3>
+        <p><strong>Marketing campaigns</strong> managed inside the tenant: define objectives and audience, set budget, run an approval workflow, generate <strong>AI marketing copy and poster images</strong>, schedule execution, and review per-campaign analytics.</p>
+
+        <h3>Where to use it</h3>
+        <p><strong>Dashboard → Campaigns</strong> — create and edit campaigns, request approval, schedule or execute, and view generated assets and performance metrics.</p>
+
+        <h3>Campaign status lifecycle</h3>
+        <table>
+          <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>DRAFT</code></td><td>Campaign is being edited</td></tr>
+            <tr><td><code>PENDING_APPROVAL</code></td><td>Submitted; awaiting manager decision</td></tr>
+            <tr><td><code>APPROVED</code></td><td>Approved and ready to schedule</td></tr>
+            <tr><td><code>SCHEDULED</code></td><td>Set to run at a future time</td></tr>
+            <tr><td><code>ACTIVE</code></td><td>Currently running</td></tr>
+            <tr><td><code>COMPLETED</code></td><td>Finished; analytics recorded</td></tr>
+            <tr><td><code>PAUSED</code> / <code>REJECTED</code> / <code>ARCHIVED</code></td><td>Stopped or archived states</td></tr>
+          </tbody>
+        </table>
+
+        <h3>How campaigns work</h3>
+        <ol class="steps">
+          <li><strong>Create</strong> a campaign with objective, audience, and content (starts as draft).</li>
+          <li>Optionally generate <strong>AI copy</strong> and a <strong>poster image</strong> stored as campaign assets.</li>
+          <li><strong>Request approval</strong> — approver accepts, rejects, or requests revision.</li>
+          <li><strong>Schedule</strong> or <strong>execute</strong> the campaign.</li>
+          <li>A <strong>background job</strong> runs execution, updates status to completed, and records impressions and analytics.</li>
+          <li><strong>WhatsApp batches</strong> may reference the same <code>campaignId</code> for coordinated outreach.</li>
+        </ol>
+        <div class="mermaid">
+flowchart LR
+  D[DRAFT] --> AI[AI copy and poster]
+  AI --> PA[PENDING_APPROVAL]
+  PA --> AP[APPROVED]
+  AP --> SCH[SCHEDULED]
+  SCH --> EX[Execute job]
+  EX --> CP[COMPLETED]
+        </div>
+
+        <h3>Permissions (campaigns)</h3>
+        <table>
+          <thead><tr><th>Permission</th><th>Allows</th></tr></thead>
+          <tbody>
+            <tr><td><code>campaigns:read</code></td><td>View campaigns</td></tr>
+            <tr><td><code>campaigns:write</code></td><td>Create and edit</td></tr>
+            <tr><td><code>campaigns:approve</code></td><td>Approve or reject</td></tr>
+            <tr><td><code>campaigns:send</code></td><td>Schedule and execute</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="chapter" id="ch8">
+        <div class="chapter-num">Chapter 08</div>
+        <h2>SEO audit</h2>
+
+        <h3>What it is</h3>
+        <p><strong>Website SEO auditing</strong> built into the platform: crawl pages, apply rule-based checks, estimate scores, list issues, and enrich findings with <strong>AI-written recommendations</strong> and executive summaries—saved per tenant as projects and scans.</p>
+
+        <h3>Where to use it</h3>
+        <p><strong>Dashboard → SEO Audit</strong> — run an instant single-URL audit, manage <strong>projects</strong> (domains), trigger multi-page <strong>scans</strong>, compare scan results, and download reports.</p>
+
+        <h4>Quick audit (runs immediately)</h4>
+        <ol class="steps">
+          <li>User enters a <strong>URL</strong>.</li>
+          <li>System <strong>crawls</strong> the page and runs the analyzer (titles, meta tags, headings, links, performance estimates, and more).</li>
+          <li><strong>AI</strong> produces a narrative summary: strengths, fixes, and grouped categories.</li>
+          <li>Results are <strong>persisted</strong> as a project, scan, page record, and issue list.</li>
+        </ol>
+
+        <h4>Project scan (runs in background)</h4>
+        <ol class="steps">
+          <li>User creates or opens an <strong>SEO project</strong> for a site or domain.</li>
+          <li>User triggers <strong>Scan</strong> — status moves to queued.</li>
+          <li>The <strong>worker</strong> crawls to configured depth, discovers linked pages, and analyzes each.</li>
+          <li>Pages with issues receive <strong>AI recommendations</strong> where applicable.</li>
+          <li>Scan completes; a <strong>report</strong> summarizes scores and issue counts.</li>
+        </ol>
+        <div class="mermaid">
+flowchart TD
+  Q[Quick audit URL] --> C[Crawl and analyze]
+  C --> L[AI summary]
+  L --> Save[Save project and scan]
+  P[Project scan] --> Q2[Queue seo-scan job]
+  Q2 --> W[Worker multi-page crawl]
+  W --> I[Issues per page]
+  I --> R[AI recommendations]
+  R --> Done[Report COMPLETED]
+        </div>
+
+        <h3>Permissions (SEO)</h3>
+        <table>
+          <thead><tr><th>Permission</th><th>Allows</th></tr></thead>
+          <tbody>
+            <tr><td><code>seo:read</code></td><td>View projects, scans, reports; run quick audit</td></tr>
+            <tr><td><code>seo:write</code></td><td>Create projects and trigger multi-page scans</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="chapter" id="ch9">
+        <div class="chapter-num">Chapter 09</div>
+        <h2>Supporting modules</h2>
+
+        <h3>WhatsApp</h3>
+        <p><strong>Dashboard → WhatsApp</strong> provides message <strong>templates</strong> with <code>{{variable}}</code> placeholders, <strong>batches</strong> of recipients (optionally tied to a campaign), and queued delivery. A worker sends messages in chunks of up to <strong>50 per step</strong> and updates delivery status. When Meta Cloud API credentials are configured, messages go through WhatsApp; otherwise the platform performs a <strong>simulated send</strong> for demonstration. Failed messages can be <strong>retried</strong>; webhooks update delivery state.</p>
+
+        <h3>Analytics</h3>
+        <p><strong>Dashboard → Analytics</strong> shows overview <strong>KPIs</strong> (appointments, users, active campaigns, SEO projects) and dedicated views for appointments, inventory, campaigns, <strong>chatbot usage</strong> (sessions and tool calls), and SEO. An <strong>aggregation worker</strong> rolls up daily metrics and snapshots; administrators can trigger manual aggregation.</p>
+
+        <h3>Notifications</h3>
+        <p><strong>Dashboard → Notifications</strong> and the header bell deliver in-app alerts from <strong>domain events</strong>: appointment changes, inventory alerts, join requests, and system notices.</p>
+
+        <h3>Operations</h3>
+        <p><strong>Dashboard → Operations</strong> exposes <strong>queue health</strong> and <strong>failed job</strong> lists across all BullMQ queues (campaigns, WhatsApp, SEO, analytics, appointments, inventory, and others). Operators can <strong>retry</strong> individual failed jobs.</p>
+
+        <h3>Users, settings, and modules</h3>
+        <table>
+          <thead><tr><th>Screen</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Users</strong></td><td>List and manage tenant user accounts</td></tr>
+            <tr><td><strong>Join Requests</strong></td><td>Approve or reject customer organization access</td></tr>
+            <tr><td><strong>Settings</strong></td><td>Organization profile, invitations, <strong>QR codes</strong> for invite links</td></tr>
+            <tr><td><strong>Modules</strong></td><td>Tenant module configuration</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="chapter" id="ch10">
+        <div class="chapter-num">Chapter 10</div>
+        <h2>How modules connect</h2>
+        <p>Modules are logically separate but share data and operational workflows across the platform.</p>
+        <div class="mermaid">
+flowchart LR
+  Assistant[AI Assistant]
+  Appt[Appointments]
+  Inv[Inventory]
+  Camp[Campaigns]
+  WA[WhatsApp]
+  SEO[SEO]
+  Ana[Analytics]
+  Notif[Notifications]
+  Assistant --> Appt
+  Assistant --> Inv
+  Camp --> WA
+  Camp --> Ana
+  SEO --> Ana
+  Appt --> Notif
+  Appt --> Ana
+  Inv --> Notif
+  Inv --> Ana
+        </div>
+        <table>
+          <thead><tr><th>From</th><th>To</th><th>Connection</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Assistant</strong></td><td>Appointments, Inventory</td><td>Books, confirms, and searches stock via the same APIs as the UI</td></tr>
+            <tr><td><strong>Campaigns</strong></td><td>WhatsApp</td><td>Batches can reference a campaign ID</td></tr>
+            <tr><td><strong>Campaigns</strong></td><td>Analytics</td><td>Impressions and campaign performance metrics</td></tr>
+            <tr><td><strong>SEO</strong></td><td>Analytics</td><td>Project and scan KPIs</td></tr>
+            <tr><td><strong>Appointments</strong></td><td>Notifications, Analytics</td><td>Events, reminders, scheduling metrics</td></tr>
+            <tr><td><strong>Inventory</strong></td><td>Notifications, Analytics</td><td>Alerts, restock events, stock metrics</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Sidebar navigation groups:</strong> Scheduling · Operations · Assistant · Marketing &amp; Growth · Admin · System</p>
+      </section>
+
+      <section class="chapter" id="ch11">
+        <div class="chapter-num">Chapter 11</div>
+        <h2>Dashboard map</h2>
+        <p>Routes appear only when the user holds the required permission and (for customers) is linked to an organization.</p>
+
+        <h3>Primary routes</h3>
+        <table>
+          <thead><tr><th>Group</th><th>Route</th><th>Permission (typical)</th></tr></thead>
+          <tbody>
+            <tr><td>Home</td><td><code>/dashboard</code></td><td>Signed in</td></tr>
+            <tr><td>Scheduling</td><td><code>/dashboard/appointments</code></td><td><code>appointments:read</code></td></tr>
+            <tr><td>Scheduling</td><td><code>/dashboard/calendar</code></td><td><code>calendar:read</code></td></tr>
+            <tr><td>Scheduling</td><td><code>/dashboard/availability</code></td><td><code>availability:read</code></td></tr>
+            <tr><td>Scheduling</td><td><code>/dashboard/service-types</code></td><td><code>service-types:read</code></td></tr>
+            <tr><td>Scheduling</td><td><code>/dashboard/booking</code></td><td><code>appointments:create</code></td></tr>
+            <tr><td>Operations</td><td><code>/dashboard/inventory</code></td><td><code>inventory:read</code></td></tr>
+            <tr><td>Operations</td><td><code>/dashboard/operations</code></td><td><code>operations:read</code></td></tr>
+            <tr><td>Assistant</td><td><code>/dashboard/assistant</code></td><td><code>chat:use</code></td></tr>
+            <tr><td>Marketing</td><td><code>/dashboard/campaigns</code></td><td><code>campaigns:read</code></td></tr>
+            <tr><td>Marketing</td><td><code>/dashboard/whatsapp</code></td><td><code>whatsapp:read</code></td></tr>
+            <tr><td>Marketing</td><td><code>/dashboard/seo</code></td><td><code>seo:read</code></td></tr>
+            <tr><td>Marketing</td><td><code>/dashboard/analytics</code></td><td><code>analytics:read</code></td></tr>
+            <tr><td>Admin</td><td><code>/dashboard/users</code></td><td><code>users:read</code></td></tr>
+            <tr><td>Admin</td><td><code>/dashboard/join-requests</code></td><td><code>join-requests:manage</code></td></tr>
+            <tr><td>Admin</td><td><code>/dashboard/notifications</code></td><td><code>notifications:read</code></td></tr>
+            <tr><td>System</td><td><code>/dashboard/settings</code></td><td><code>tenants:update</code></td></tr>
+            <tr><td>System</td><td><code>/dashboard/modules</code></td><td><code>tenants:update</code></td></tr>
+            <tr><td>Customer</td><td><code>/dashboard/pending-tenant</code></td><td>Customer awaiting org approval</td></tr>
+            <tr><td>Public</td><td><code>/join</code></td><td>Customer register + join</td></tr>
+            <tr><td>Public</td><td><code>/invite/[token]</code></td><td>Accept staff or customer invite</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Analytics sub-routes</h3>
+        <table>
+          <thead><tr><th>Route</th><th>Focus</th></tr></thead>
+          <tbody>
+            <tr><td><code>/dashboard/analytics/appointments</code></td><td>Scheduling metrics</td></tr>
+            <tr><td><code>/dashboard/analytics/inventory</code></td><td>Stock metrics</td></tr>
+            <tr><td><code>/dashboard/analytics/campaigns</code></td><td>Campaign performance</td></tr>
+            <tr><td><code>/dashboard/analytics/seo</code></td><td>SEO scan metrics</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Inventory sub-routes</h3>
+        <table>
+          <thead><tr><th>Route</th><th>Focus</th></tr></thead>
+          <tbody>
+            <tr><td><code>/dashboard/inventory/items</code></td><td>Item catalog</td></tr>
+            <tr><td><code>/dashboard/inventory/categories</code></td><td>Categories</td></tr>
+            <tr><td><code>/dashboard/inventory/movements</code></td><td>Movement audit trail</td></tr>
+            <tr><td><code>/dashboard/inventory/alerts</code></td><td>Stock alerts</td></tr>
+            <tr><td><code>/dashboard/inventory/requests</code></td><td>Restock workflow</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <footer>
+        NexaAssist — Platform Report · Everything described above is live in the product today:
+        multi-tenant workspaces, registration and invite QR onboarding, scheduling, inventory, AI assistant,
+        campaigns, SEO, WhatsApp, analytics, and operations tooling in one platform.
+      </footer>
+    </main>
+  </div>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "neutral",
+      themeVariables: {
+        primaryColor: "#eef2ff",
+        primaryTextColor: "#0f172a",
+        primaryBorderColor: "#4338ca",
+        lineColor: "#334155",
+        secondaryColor: "#f1f5f9",
+        tertiaryColor: "#ffffff",
+        fontFamily: "Segoe UI, system-ui, sans-serif",
+        fontSize: "13px",
+      },
+    });
+  </script>
+</body>
+</html>
