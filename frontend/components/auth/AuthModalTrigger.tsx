@@ -14,11 +14,10 @@ export function AuthModalTrigger({
   registerMode = "org",
   children,
   className = "",
-  ...props
+  onClick,
+  ...rest
 }: AuthModalTriggerProps) {
   const { openLogin, openRegister } = useAuthModal();
-
-  const { onClick, ...rest } = props;
 
   return (
     <button

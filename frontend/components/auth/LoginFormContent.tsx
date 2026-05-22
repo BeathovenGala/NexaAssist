@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, persistTokens } from "@/lib/api";
+import { apiErrorMessage } from "@/lib/apiEnvelope";
 import { useAuth, defaultDashboardPath } from "@/lib/auth";
 import { useAuthModal } from "@/lib/auth-modal";
 import { AuthField } from "@/components/auth/AuthField";
@@ -45,7 +46,7 @@ export function LoginFormContent() {
         router.push(dest);
       }
     } catch (err: unknown) {
-      setError(extractErr(err));
+      setError(apiErrorMessage(err, "Login failed"));
     } finally {
       setLoading(false);
     }
@@ -115,19 +116,3 @@ export function LoginFormContent() {
   );
 }
 
-function extractErr(err: unknown): string {
-  if (
-    err &&
-    typeof err === "object" &&
-    "response" in err &&
-    err.response &&
-    typeof err.response === "object" &&
-    "data" in err.response &&
-    err.response.data &&
-    typeof err.response.data === "object" &&
-    "message" in err.response.data
-  ) {
-    return String((err.response.data as { message?: string }).message);
-  }
-  return "Login failed";
-}
