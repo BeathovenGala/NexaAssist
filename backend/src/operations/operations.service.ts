@@ -1,7 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Queue } from 'bullmq';
-import Redis from 'ioredis';
+import type Redis from 'ioredis';
+import {
+  bullmqConnectionOptions,
+  createRedisClient,
+} from '../common/redis/redis-connection';
 import { ALL_QUEUE_NAMES, QUEUE_NAMES } from '../queues/queue-names';
 import type { AuthUser } from '../types/auth-user';
 import { resolveSchedulingTenantId } from '../common/utils/scheduling.util';
@@ -12,15 +16,11 @@ export class OperationsService {
   private readonly redis: Redis;
 
   constructor(private readonly config: ConfigService) {
-    const redisUrl =
-      this.config.get<string>('REDIS_URL') ?? 'redis://localhost:6379';
-    this.redis = new Redis(redisUrl);
+    this.redis = createRedisClient(config);
+    const connection = bullmqConnectionOptions(config);
     this.queues = new Map();
     for (const name of ALL_QUEUE_NAMES) {
-      this.queues.set(
-        name,
-        new Queue(name, { connection: { url: redisUrl } }),
-      );
+      this.queues.set(name, new Queue(name, { connection }));
     }
   }
 

@@ -1,6 +1,7 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
+import type Redis from 'ioredis';
+import { createRedisClient } from '../common/redis/redis-connection';
 import { PrismaService } from '../prisma/prisma.service';
 
 export type DependencyStatus = 'ok' | 'error';
@@ -27,13 +28,7 @@ export class HealthService implements OnModuleDestroy {
 
   private getRedis(): Redis {
     if (!this.redis) {
-      const url =
-        this.config.get<string>('REDIS_URL') ?? 'redis://localhost:6379';
-      this.redis = new Redis(url, {
-        maxRetriesPerRequest: 1,
-        connectTimeout: 3000,
-        lazyConnect: true,
-      });
+      this.redis = createRedisClient(this.config);
     }
     return this.redis;
   }

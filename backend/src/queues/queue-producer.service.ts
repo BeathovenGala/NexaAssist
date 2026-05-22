@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Queue } from 'bullmq';
+import { bullmqConnectionOptions } from '../common/redis/redis-connection';
 import {
   ALL_QUEUE_NAMES,
   DEFAULT_JOB_OPTIONS,
@@ -37,13 +38,12 @@ export class QueueProducerService implements OnModuleDestroy {
   private readonly queues = new Map<QueueName, Queue>();
 
   constructor(private readonly config: ConfigService) {
-    const redisUrl =
-      this.config.get<string>('REDIS_URL') ?? 'redis://localhost:6379';
+    const connection = bullmqConnectionOptions(config);
     for (const name of ALL_QUEUE_NAMES) {
       this.queues.set(
         name,
         new Queue(name, {
-          connection: { url: redisUrl },
+          connection,
           defaultJobOptions: DEFAULT_JOB_OPTIONS,
         }),
       );
