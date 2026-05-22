@@ -58,6 +58,7 @@ Default tenant name: `Demo Medical Group` → slug `demo-medical-group` → `use
 | `INVENTORY_MANAGER` | `im.chen.demo@seed.local` | same | `IM-DEMOMEDICALGROUP-001` | Morgan Chen |
 | `RECEPTIONIST` | `rc.morgan.demo@seed.local` | same | `RC-DEMOMEDICALGROUP-001` | Riley Morgan |
 | `STAFF` | `st.jordan.demo@seed.local` | same | `ST-DEMOMEDICALGROUP-001` | Jordan Lee |
+| `CHATBOT_EXEC` | `exec.support.demo@seed.local` | same | `EX-DEMOMEDICALGROUP-001` | Eva Support |
 | `CUSTOMER` (in-tenant) | `patient.lee.demo@seed.local` | same | `CU-DEMOMEDICALGROUP-001` | Pat Lee |
 
 Slug segment in `userCode` is `formatTenantSlugPart(slug)`: alphanumeric only, uppercase, max 16 chars (see `backend/src/common/utils/slug.util.ts`).
@@ -101,6 +102,7 @@ Reference only — full matrix is `rolePermissionMap` in `backend/prisma/seed.ts
 - **RECEPTIONIST** — appointments + availability + service-types write + inventory read/request.
 - **STAFF** — similar to doctor minus `portal:access` in seed map; check seed for exact diff.
 - **CUSTOMER** — portal, own appointments, availability read, join-requests create.
+- **CHATBOT_EXEC** — `chat:use`, `tickets:read`, `tickets:manage`, `notifications:read` (Phase 7 exec dashboard).
 
 ---
 
