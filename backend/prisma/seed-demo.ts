@@ -11,6 +11,7 @@ const ROLE_CODE_PREFIX: Record<RoleName, string> = {
   [RoleName.RECEPTIONIST]: 'RC',
   [RoleName.STAFF]: 'ST',
   [RoleName.CUSTOMER]: 'CU',
+  [RoleName.CHATBOT_EXEC]: 'EX',
 };
 
 async function allocateTenantUserCode(
@@ -105,6 +106,9 @@ export async function seedDemoPersonas(
   const customerSoloEmail =
     process.env.SEED_DEMO_CUSTOMER_SOLO_EMAIL?.trim()?.toLowerCase() ||
     'customer.unaffiliated@seed.local';
+  const execEmail =
+    process.env.SEED_DEMO_EXEC_EMAIL?.trim()?.toLowerCase() ||
+    'exec.support.demo@seed.local';
 
   const passwordHash = await bcrypt.hash(password, bcryptRounds);
 
@@ -149,6 +153,13 @@ export async function seedDemoPersonas(
       firstName: 'Pat',
       lastName: 'Lee',
       role: RoleName.CUSTOMER,
+      tenantMode: 'tenant',
+    },
+    {
+      email: execEmail,
+      firstName: 'Eva',
+      lastName: 'Support',
+      role: RoleName.CHATBOT_EXEC,
       tenantMode: 'tenant',
     },
     {

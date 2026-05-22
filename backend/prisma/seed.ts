@@ -75,6 +75,7 @@ const permissions: PermissionSeed[] = [
   },
   { code: 'campaigns:read', module: 'campaigns', description: 'View campaigns' },
   { code: 'campaigns:write', module: 'campaigns', description: 'Create and edit campaigns' },
+  { code: 'campaigns:approve', module: 'campaigns', description: 'Approve or reject campaigns' },
   { code: 'campaigns:send', module: 'campaigns', description: 'Send campaigns' },
   { code: 'seo:read', module: 'seo', description: 'View SEO reports' },
   { code: 'seo:run', module: 'seo', description: 'Run SEO scans' },
@@ -140,6 +141,7 @@ const rolePermissionMap: Record<RoleName, string[]> = {
     'inventory:adjust',
     'campaigns:read',
     'campaigns:write',
+    'campaigns:approve',
     'campaigns:send',
     'seo:read',
     'seo:run',
@@ -233,6 +235,12 @@ const rolePermissionMap: Record<RoleName, string[]> = {
     'inventory:request',
     'notifications:read',
   ],
+  [RoleName.CHATBOT_EXEC]: [
+    'chat:use',
+    'tickets:read',
+    'tickets:manage',
+    'notifications:read',
+  ],
 };
 
 const roleDescriptions: Record<RoleName, string> = {
@@ -243,6 +251,7 @@ const roleDescriptions: Record<RoleName, string> = {
   [RoleName.RECEPTIONIST]: 'Front-desk scheduling',
   [RoleName.STAFF]: 'General staff access',
   [RoleName.CUSTOMER]: 'End customer / patient portal',
+  [RoleName.CHATBOT_EXEC]: 'Tenant support executive for escalated chats',
 };
 
 async function main(): Promise<void> {
@@ -255,6 +264,13 @@ async function main(): Promise<void> {
     prisma.inventoryRequest.deleteMany(),
     prisma.inventoryItem.deleteMany(),
     prisma.inventoryCategory.deleteMany(),
+    prisma.escalationMessage.deleteMany(),
+    prisma.escalationTicket.deleteMany(),
+    prisma.chatAuditLog.deleteMany(),
+    prisma.chatToolCall.deleteMany(),
+    prisma.conversationState.deleteMany(),
+    prisma.chatMessage.deleteMany(),
+    prisma.chatSession.deleteMany(),
     prisma.appointmentReminder.deleteMany(),
     prisma.appointmentNote.deleteMany(),
     prisma.appointmentHistory.deleteMany(),

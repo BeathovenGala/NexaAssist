@@ -25,6 +25,7 @@ enum RoleName {
   RECEPTIONIST
   STAFF
   CUSTOMER
+  CHATBOT_EXEC
 }
 
 enum InviteStatus {
@@ -169,6 +170,166 @@ enum InventoryTransactionStatus {
   CANCELLED
 }
 
+enum ChatMessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+  TOOL
+}
+
+enum ChatSessionStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum ConversationWorkflow {
+  NONE
+  BOOK_APPOINTMENT
+  RESCHEDULE_APPOINTMENT
+  CANCEL_APPOINTMENT
+  DOCTOR_SCHEDULE_QUERY
+  INVENTORY_LOOKUP
+  INVENTORY_CREATE
+  INVENTORY_REQUEST
+  USER_CREATE
+  PENDING_CONFIRMATION
+}
+
+enum ChatAuditAction {
+  INTENT_DETECTED
+  SLOT_UPDATED
+  TOOL_CALLED
+  TOOL_DENIED
+  CONFIRMED
+  CANCELLED
+  ERROR
+}
+
+enum EscalationTicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum CampaignStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  SCHEDULED
+  ACTIVE
+  COMPLETED
+  PAUSED
+  REJECTED
+  ARCHIVED
+}
+
+enum CampaignObjective {
+  BRAND_AWARENESS
+  LEAD_GENERATION
+  SALES_PROMOTION
+  CUSTOMER_RETENTION
+  EVENT_PROMOTION
+  PRODUCT_LAUNCH
+}
+
+enum CampaignAudienceType {
+  ALL_CUSTOMERS
+  SEGMENT
+  CUSTOM_LIST
+  APPOINTMENT_HISTORY
+  INVENTORY_PURCHASERS
+}
+
+enum CampaignAssetType {
+  POSTER
+  BANNER
+  IMAGE
+  VIDEO
+  COPY_TEXT
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REVISION_REQUESTED
+}
+
+enum CampaignChannel {
+  WHATSAPP
+  EMAIL
+  SMS
+  IN_APP
+}
+
+enum ExecutionStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum WhatsAppMessageStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  READ
+  FAILED
+  EXPIRED
+}
+
+enum WhatsAppBatchStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum SeoScanStatus {
+  QUEUED
+  CRAWLING
+  ANALYZING
+  GENERATING_REPORT
+  COMPLETED
+  FAILED
+}
+
+enum SeoIssueSeverity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFO
+}
+
+enum SeoIssueType {
+  MISSING_TITLE
+  MISSING_META_DESCRIPTION
+  DUPLICATE_CONTENT
+  BROKEN_LINK
+  MISSING_ALT_TEXT
+  SLOW_PAGE_SPEED
+  MISSING_H1
+  DUPLICATE_H1
+  MISSING_CANONICAL
+  REDIRECT_CHAIN
+  LARGE_PAGE_SIZE
+  MISSING_STRUCTURED_DATA
+}
+
+enum AnalyticsModule {
+  APPOINTMENTS
+  INVENTORY
+  CAMPAIGNS
+  WHATSAPP
+  CHATBOT
+  SEO
+  GENERAL
+}
+
 model Tenant {
   id               String            @id @default(uuid())
   name             String
@@ -194,6 +355,15 @@ model Tenant {
   inventoryAlerts     InventoryAlert[]
   inventoryTransactions InventoryTransaction[]
   notifications         Notification[]
+  chatSessions          ChatSession[]
+  campaigns             Campaign[]
+  whatsappTemplates     WhatsAppTemplate[]
+  whatsappBatches       WhatsAppBatch[]
+  seoProjects           SeoProject[]
+  analyticsEvents       AnalyticsEvent[]
+  analyticsDailyMetrics AnalyticsDailyMetric[]
+  analyticsSnapshots    AnalyticsSnapshot[]
+  analyticsInsights     AnalyticsInsight[]
 }
 
 model Invitation {
@@ -247,6 +417,10 @@ model User {
   inventoryRequestsApproved InventoryRequest[] @relation("InventoryRequestApprovedBy")
   inventoryTransactionsPerformed InventoryTransaction[]
   notifications                  Notification[]
+  chatSessions                   ChatSession[]
+  campaignsCreated               Campaign[]           @relation("CampaignCreatedBy")
+  approvalsRequested             CampaignApproval[]   @relation("ApprovalRequestedBy")
+  approvalsApproved              CampaignApproval[]   @relation("ApprovalApprovedBy")
 
   @@index([tenantId])
   @@index([email])
@@ -659,4 +833,469 @@ model InventoryTransactionItem {
 
   @@index([transactionId])
   @@index([itemId])
+}
+
+model ChatSession {
+  id                String            @id @default(uuid())
+  tenantId          String
+  tenant            Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status            ChatSessionStatus @default(ACTIVE)
+  title             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  messages          ChatMessage[]
+  conversationState ConversationState?
+  toolCalls         ChatToolCall[]
+  auditLogs         ChatAuditLog[]
+  escalationTickets EscalationTicket[]
+
+  @@index([tenantId, userId])
+  @@index([tenantId, updatedAt])
+}
+
+model ChatMessage {
+  id        String          @id @default(uuid())
+  sessionId String
+  session   ChatSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      ChatMessageRole
+  content   String
+  metadata  Json?
+  createdAt DateTime        @default(now())
+
+  @@index([sessionId, createdAt])
+}
+
+model ConversationState {
+  id              String               @id @default(uuid())
+  sessionId       String               @unique
+  session         ChatSession          @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  workflow        ConversationWorkflow @default(NONE)
+  step            String               @default("idle")
+  slots           Json                 @default("{}")
+  missingSlots    String[]             @default([])
+  confidence      Float?
+  pendingTool     String?
+  pendingPayload  Json?
+  expiresAt       DateTime?
+  updatedAt       DateTime             @updatedAt
+}
+
+model ChatToolCall {
+  id          String      @id @default(uuid())
+  sessionId   String
+  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  tenantId    String
+  actorUserId String
+  toolName    String
+  input       Json?
+  output      Json?
+  success     Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+
+  @@index([sessionId])
+  @@index([tenantId, createdAt])
+}
+
+model ChatAuditLog {
+  id        String          @id @default(uuid())
+  sessionId String
+  session   ChatSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  tenantId  String
+  userId    String
+  action    ChatAuditAction
+  detail    Json?
+  createdAt DateTime        @default(now())
+
+  @@index([sessionId])
+  @@index([tenantId, createdAt])
+}
+
+/// Phase 7 — schema stub; unused in Phase 6 code paths.
+model EscalationTicket {
+  id          String                 @id @default(uuid())
+  sessionId   String
+  session     ChatSession            @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  tenantId    String
+  customerId  String
+  summary     String
+  category    String?
+  confidence  Float?
+  status      EscalationTicketStatus @default(OPEN)
+  assignedToId String?
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  messages    EscalationMessage[]
+
+  @@index([tenantId, status])
+  @@index([sessionId])
+}
+
+/// Phase 7 — schema stub.
+model EscalationMessage {
+  id        String           @id @default(uuid())
+  ticketId  String
+  ticket    EscalationTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderId  String
+  content   String
+  createdAt DateTime         @default(now())
+
+  @@index([ticketId, createdAt])
+}
+
+// Phase 9 — Campaign & Ads System
+
+model Campaign {
+  id              String               @id @default(cuid())
+  tenantId        String
+  createdById     String
+  name            String
+  objective       CampaignObjective
+  status          CampaignStatus       @default(DRAFT)
+  startAt         DateTime?
+  endAt           DateTime?
+  budget          Decimal?             @db.Decimal(10, 2)
+  audienceType    CampaignAudienceType @default(ALL_CUSTOMERS)
+  notes           String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  tenant          Tenant               @relation(fields: [tenantId], references: [id])
+  createdBy       User                 @relation("CampaignCreatedBy", fields: [createdById], references: [id])
+  audiences       CampaignAudience[]
+  assets          CampaignAsset[]
+  messages        CampaignMessage[]
+  approvals       CampaignApproval[]
+  schedules       CampaignSchedule[]
+  executions      CampaignExecution[]
+  analytics       CampaignAnalytics?
+  whatsappBatches WhatsAppBatch[]
+
+  @@index([tenantId])
+  @@index([status])
+}
+
+model CampaignAudience {
+  id              String   @id @default(cuid())
+  campaignId      String
+  audienceRuleJson Json
+  estimatedReach  Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  campaign        Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model CampaignAsset {
+  id          String            @id @default(cuid())
+  campaignId  String
+  type        CampaignAssetType
+  storageUrl  String
+  aiGenerated Boolean           @default(false)
+  metadata    Json?
+  createdAt   DateTime          @default(now())
+
+  campaign    Campaign          @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model CampaignMessage {
+  id          String   @id @default(cuid())
+  campaignId  String
+  title       String
+  body        String
+  aiGenerated Boolean  @default(false)
+  approved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model CampaignApproval {
+  id            String         @id @default(cuid())
+  campaignId    String
+  requestedById String
+  approvedById  String?
+  status        ApprovalStatus @default(PENDING)
+  comment       String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  campaign      Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  requestedBy   User           @relation("ApprovalRequestedBy", fields: [requestedById], references: [id])
+  approvedBy    User?          @relation("ApprovalApprovedBy", fields: [approvedById], references: [id])
+}
+
+model CampaignSchedule {
+  id             String   @id @default(cuid())
+  campaignId     String
+  scheduledAt    DateTime
+  timezone       String   @default("UTC")
+  recurrenceRule String?
+  createdAt      DateTime @default(now())
+
+  campaign       Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model CampaignExecution {
+  id           String          @id @default(cuid())
+  campaignId   String
+  channel      CampaignChannel
+  status       ExecutionStatus @default(QUEUED)
+  startedAt    DateTime?
+  completedAt  DateTime?
+  errorMessage String?
+  metadata     Json?
+  createdAt    DateTime        @default(now())
+
+  campaign     Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@index([status])
+}
+
+model CampaignAnalytics {
+  id           String   @id @default(cuid())
+  campaignId   String   @unique
+  impressions  Int      @default(0)
+  clicks       Int      @default(0)
+  replies      Int      @default(0)
+  conversions  Int      @default(0)
+  deliveryRate Decimal  @default(0) @db.Decimal(5, 2)
+  updatedAt    DateTime @updatedAt
+
+  campaign     Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+// Phase 10 — WhatsApp & Offer Delivery
+
+model WhatsAppTemplate {
+  id            String            @id @default(cuid())
+  tenantId      String
+  name          String
+  content       String
+  variablesJson Json?
+  approved      Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  tenant        Tenant            @relation(fields: [tenantId], references: [id])
+  messages      WhatsAppMessage[]
+
+  @@index([tenantId])
+}
+
+model WhatsAppBatch {
+  id              String              @id @default(cuid())
+  tenantId        String
+  campaignId      String?
+  totalRecipients Int                 @default(0)
+  sentCount       Int                 @default(0)
+  deliveredCount  Int                 @default(0)
+  failedCount     Int                 @default(0)
+  status          WhatsAppBatchStatus @default(PENDING)
+  scheduledAt     DateTime?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime            @default(now())
+
+  tenant          Tenant              @relation(fields: [tenantId], references: [id])
+  campaign        Campaign?           @relation(fields: [campaignId], references: [id])
+  messages        WhatsAppMessage[]
+
+  @@index([tenantId])
+  @@index([status])
+}
+
+model WhatsAppMessage {
+  id                String                @id @default(cuid())
+  batchId           String
+  templateId        String?
+  recipientPhone    String
+  content           String
+  status            WhatsAppMessageStatus @default(QUEUED)
+  providerMessageId String?
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  readAt            DateTime?
+  failedAt          DateTime?
+  errorMessage      String?
+  createdAt         DateTime              @default(now())
+
+  batch             WhatsAppBatch         @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  template          WhatsAppTemplate?     @relation(fields: [templateId], references: [id])
+  callbacks         WhatsAppCallback[]
+
+  @@index([batchId])
+  @@index([status])
+}
+
+model WhatsAppCallback {
+  id              String          @id @default(cuid())
+  messageId       String
+  providerPayload Json
+  status          String
+  receivedAt      DateTime        @default(now())
+
+  message         WhatsAppMessage @relation(fields: [messageId], references: [id])
+
+  @@index([messageId])
+}
+
+// Phase 11 — SEO Audit Engine
+
+model SeoProject {
+  id        String    @id @default(cuid())
+  tenantId  String
+  name      String
+  baseUrl   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  scans     SeoScan[]
+
+  @@index([tenantId])
+}
+
+model SeoScan {
+  id          String        @id @default(cuid())
+  projectId   String
+  status      SeoScanStatus @default(QUEUED)
+  pagesFound  Int           @default(0)
+  issuesFound Int           @default(0)
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime      @default(now())
+
+  project     SeoProject    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  pages       SeoPage[]
+  report      SeoReport?
+
+  @@index([projectId])
+}
+
+model SeoPage {
+  id               String              @id @default(cuid())
+  scanId           String
+  url              String
+  title            String?
+  metaDescription  String?
+  h1               String?
+  wordCount        Int                 @default(0)
+  statusCode       Int                 @default(200)
+  loadTimeMs       Int?
+  createdAt        DateTime            @default(now())
+
+  scan             SeoScan             @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  issues           SeoIssue[]
+  recommendations  SeoRecommendation[]
+  lighthouseResult SeoLighthouseResult?
+
+  @@index([scanId])
+}
+
+model SeoIssue {
+  id          String           @id @default(cuid())
+  pageId      String
+  type        SeoIssueType
+  severity    SeoIssueSeverity
+  description String
+  createdAt   DateTime         @default(now())
+
+  page        SeoPage          @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId])
+  @@index([severity])
+}
+
+model SeoRecommendation {
+  id        String   @id @default(cuid())
+  pageId    String
+  aiSummary String
+  priority  Int      @default(5)
+  createdAt DateTime @default(now())
+
+  page      SeoPage  @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
+
+model SeoLighthouseResult {
+  id            String   @id @default(cuid())
+  pageId        String   @unique
+  performance   Int      @default(0)
+  accessibility Int      @default(0)
+  seoScore      Int      @default(0)
+  bestPractices Int      @default(0)
+  rawResultJson Json?
+  createdAt     DateTime @default(now())
+
+  page          SeoPage  @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
+
+model SeoReport {
+  id        String   @id @default(cuid())
+  scanId    String   @unique
+  reportUrl String?
+  summary   Json?
+  createdAt DateTime @default(now())
+
+  scan      SeoScan  @relation(fields: [scanId], references: [id], onDelete: Cascade)
+}
+
+// Phase 12 — Analytics & Insights
+
+model AnalyticsEvent {
+  id          String          @id @default(cuid())
+  tenantId    String
+  type        String
+  module      AnalyticsModule
+  payloadJson Json
+  createdAt   DateTime        @default(now())
+
+  tenant      Tenant          @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([module])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model AnalyticsDailyMetric {
+  id       String          @id @default(cuid())
+  tenantId String
+  module   AnalyticsModule
+  metric   String
+  value    Decimal         @db.Decimal(15, 4)
+  date     DateTime        @db.Date
+
+  tenant   Tenant          @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, module, metric, date])
+  @@index([tenantId, module])
+  @@index([date])
+}
+
+model AnalyticsSnapshot {
+  id           String          @id @default(cuid())
+  tenantId     String
+  module       AnalyticsModule
+  snapshotJson Json
+  createdAt    DateTime        @default(now())
+
+  tenant       Tenant          @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, module])
+}
+
+model AnalyticsInsight {
+  id          String          @id @default(cuid())
+  tenantId    String
+  module      AnalyticsModule
+  title       String
+  insight     String
+  generatedAt DateTime        @default(now())
+
+  tenant      Tenant          @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
 }
