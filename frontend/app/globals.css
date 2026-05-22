@@ -1,0 +1,573 @@
+@import "tailwindcss";
+
+/* NexaAssist — Futuristic dark theme */
+:root {
+  --na-bg: #010308;
+  --na-bg-deep: #030614;
+  --na-surface: rgba(12, 18, 50, 0.55);
+  --na-surface-2: rgba(15, 22, 65, 0.6);
+  --na-border: rgba(80, 120, 220, 0.15);
+  --na-border-subtle: rgba(70, 105, 200, 0.1);
+  --na-text: #dde5f8;
+  --na-muted: rgba(175, 200, 240, 0.65);
+  --na-accent: #7aadff;
+  --na-accent-solid: #3c72e8;
+  --na-cyan: #5cc8ff;
+  --na-primary-btn: rgba(220, 230, 255, 0.92);
+  --na-primary-btn-text: #020618;
+  --na-header-bg: rgba(6, 9, 24, 0.82);
+  --na-cinematic-progress: 0;
+}
+
+@theme inline {
+  --color-background: var(--na-bg);
+  --color-foreground: var(--na-text);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), "Instrument Serif", Georgia, serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--na-bg);
+  color: var(--na-text);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Prevent white flash on load */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dashboard / settings — shared controls (aligns with AuthField / AuthPrimaryButton) */
+.na-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--na-border);
+  background: var(--na-bg-deep);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--na-text);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.na-input::placeholder {
+  color: color-mix(in srgb, var(--na-muted) 40%, transparent);
+}
+.na-input:focus {
+  border-color: color-mix(in srgb, var(--na-accent) 55%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--na-accent) 18%, transparent);
+}
+
+/* ── Buttons — guaranteed 44px touch target ── */
+.na-btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 44px;
+  border-radius: 0.5rem;
+  border: none;
+  background: linear-gradient(135deg, var(--na-accent-solid) 0%, rgba(90, 50, 210, 0.9) 100%);
+  padding: 0.625rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(60, 114, 232, 0.35), 0 2px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+  z-index: 1;
+}
+.na-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 0 28px rgba(60, 114, 232, 0.5), 0 4px 16px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+.na-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+.na-btn-primary:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.na-btn-secondary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 44px;
+  border-radius: 0.5rem;
+  border: 1px solid var(--na-border);
+  background: var(--na-surface);
+  padding: 0.625rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--na-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+  touch-action: manipulation;
+  z-index: 1;
+}
+.na-btn-secondary:hover:not(:disabled) {
+  background: var(--na-surface-2);
+  border-color: rgba(100, 150, 255, 0.3);
+  transform: translateY(-1px);
+}
+.na-btn-secondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+.na-btn-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Danger variant */
+.na-btn-danger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(220, 38, 38, 0.12);
+  padding: 0.625rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #f87171;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+  touch-action: manipulation;
+  z-index: 1;
+}
+.na-btn-danger:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.22);
+  transform: translateY(-1px);
+}
+.na-btn-danger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Glass morphism — dashboard cards, modals, panels */
+.na-glass-card {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(120, 160, 255, 0.18);
+  background: rgba(12, 18, 50, 0.42);
+  backdrop-filter: blur(20px) saturate(1.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.35);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 25px 50px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(60, 114, 232, 0.06);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.na-card {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(120, 160, 255, 0.16);
+  background: rgba(12, 18, 50, 0.42);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 20px 45px rgba(0, 0, 0, 0.38),
+    0 0 32px rgba(60, 114, 232, 0.05);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.na-card:hover {
+  border-color: rgba(120, 160, 255, 0.26);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 24px 52px rgba(0, 0, 0, 0.42),
+    0 0 48px rgba(60, 114, 232, 0.1);
+}
+
+.na-modal-backdrop {
+  background: rgba(1, 3, 8, 0.45);
+  backdrop-filter: blur(28px) saturate(1.15);
+  -webkit-backdrop-filter: blur(28px) saturate(1.15);
+  animation: na-fade-in 0.22s ease-out;
+}
+
+/* Extra page blur while auth modals are open */
+html.na-auth-modal-open #top {
+  filter: blur(6px);
+  transform: scale(1.005);
+  transition: filter 0.25s ease, transform 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.na-auth-modal-open #top {
+    filter: none;
+    transform: none;
+    transition: none;
+  }
+}
+
+.na-modal-panel {
+  animation: na-modal-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.na-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  border-radius: 9999px;
+  border: 1px solid rgba(120, 160, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--na-muted);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.na-modal-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--na-text);
+  border-color: rgba(120, 160, 255, 0.35);
+}
+
+@keyframes na-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes na-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .na-modal-backdrop,
+  .na-modal-panel {
+    animation: none;
+  }
+  .na-card:hover {
+    transform: none;
+  }
+}
+
+/* Landing — cinematic homepage */
+.na-display {
+  font-family: var(--font-display), "Instrument Serif", Georgia, serif;
+  font-weight: 400;
+}
+
+.na-scanline,
+.na-monitor-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+}
+
+.na-hero-haze {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 45%, rgba(50,90,230,0.35), transparent 65%),
+    radial-gradient(ellipse 60% 40% at 25% 65%, rgba(80,40,200,0.18), transparent 60%);
+}
+
+.na-cinematic-haze {
+  background:
+    radial-gradient(ellipse 90% 60% at 72% 45%, rgba(107, 124, 255, 0.14), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 15% 70%, rgba(70, 234, 237, 0.05), transparent 50%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, rgba(13, 14, 15, 0.9), transparent 70%);
+}
+
+.na-cinematic-vignette {
+  background:
+    linear-gradient(90deg, rgba(10, 11, 13, 0.72) 0%, rgba(10, 11, 13, 0.2) 38%, transparent 58%),
+    linear-gradient(180deg, rgba(10, 11, 13, 0.5) 0%, transparent 35%, rgba(10, 11, 13, 0.75) 100%);
+  pointer-events: none;
+}
+
+.na-hero-headline {
+  color: #fff;
+  text-shadow:
+    0 0 80px rgba(100, 160, 255, 0.45),
+    0 0 20px rgba(100, 160, 255, 0.25);
+}
+
+/* Glow ring utility */
+.na-glow-ring {
+  box-shadow: 0 0 28px rgba(70, 130, 230, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.na-scroll-stage {
+  position: relative;
+  z-index: 20;
+}
+
+.na-cinematic-stage {
+  will-change: opacity;
+}
+
+.na-hero-canvas-glow {
+  background: radial-gradient(circle at 60% 50%, rgba(77, 147, 229, 0.15), transparent 65%);
+}
+
+.na-monitor-shell {
+  background: linear-gradient(145deg, #161819 0%, var(--na-bg-deep) 100%);
+}
+
+.na-intro-grain {
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+.na-monitor-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  opacity: 0.03;
+}
+
+@keyframes monitor-flicker {
+  0%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0.72;
+  }
+  96% {
+    opacity: 0.88;
+  }
+}
+
+.na-monitor-flicker {
+  animation: monitor-flicker 4s steps(1) infinite;
+}
+
+.na-monitor-flicker-delay {
+  animation: monitor-flicker 4s steps(1) infinite;
+  animation-delay: 0.6s;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+[data-reveal] {
+  will-change: auto;
+}
+
+.na-intro-active [data-reveal] {
+  opacity: 0;
+}
+
+.na-pinned-chapter .na-pinned-inner {
+  will-change: transform;
+}
+
+/* ── Prism liquid-glass card borders ── */
+@property --prism-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes prism-spin {
+  to {
+    --prism-angle: 360deg;
+  }
+}
+
+.na-prism-border {
+  background: conic-gradient(
+    from var(--prism-angle, 0deg),
+    rgba(255, 107, 157, 0.72),
+    rgba(196, 77, 255, 0.65),
+    rgba(77, 163, 255, 0.72),
+    rgba(0, 218, 255, 0.65),
+    rgba(72, 255, 186, 0.58),
+    rgba(255, 220, 80, 0.62),
+    rgba(255, 107, 157, 0.72)
+  );
+  animation: prism-spin 8s linear infinite;
+}
+
+/* ── Fixed hero background: always at z=0, visible behind narrative, ──────
+   covered only when the cards panel (z=20) scrolls over it.
+   Never unpins — position:fixed keeps it at the viewport regardless
+   of how far the user has scrolled through the narrative chapters.      */
+.na-hero-fixed-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 0;
+  overflow: hidden;
+  background: #010308;
+  pointer-events: none;
+}
+
+/* ── Hero text section: 100vh normal document flow ─────────────────────
+   Sits at z=10 (above the fixed bg at z=0). Scrolls away naturally —
+   completely off-screen before the first narrative chapter enters,
+   so there is never any text overlap.                                    */
+.na-hero-text-section {
+  position: relative;
+  z-index: 10;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ── Narrative layer: floats over the fixed hero background ─────────────
+ * Stacking context (no positioned ancestor sets z-index):
+ *   na-hero-fixed-bg   z=0  (fixed) ← always behind everything
+ *   na-hero-text-section z=10 ← scrolls away after 100vh
+ *   na-narrative-float z=10 ← transparent chapters, hero shows through
+ *   na-content-panel   z=20 ← solid bg, covers hero when cards arrive
+ *
+ * No negative margin needed — narrative follows hero text section
+ * naturally in document flow. Zero overlap, zero gap.                   */
+.na-narrative-float {
+  position: relative;
+  z-index: 10;
+}
+
+/* Soft top-edge fade so the first chapter "emerges" from the hero */
+.na-narrative-float::before {
+  content: "";
+  position: absolute;
+  inset-x: 0;
+  top: 0;
+  height: 140px;
+  background: linear-gradient(to bottom, transparent 0%, rgba(1, 3, 8, 0.25) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Content floating panel that slides over the hero ── */
+.na-content-panel {
+  position: relative;
+  z-index: 20;
+  border-radius: 28px 28px 0 0;
+  background: linear-gradient(180deg, #0a0e28 0%, #010308 12%);
+  box-shadow:
+    0 -1px 0 rgba(100, 140, 255, 0.15),
+    0 -40px 80px rgba(0, 0, 0, 0.9),
+    0 -2px 0 rgba(80, 120, 255, 0.12);
+  margin-top: -2px;
+}
+
+/* ── Sidebar nav links — guaranteed 44px hit target ── */
+.na-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 44px;
+  border-radius: 0.5rem;
+  padding: 0 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease;
+  touch-action: manipulation;
+  text-decoration: none;
+  color: var(--na-muted);
+}
+.na-nav-link:hover {
+  background: var(--na-surface-2);
+  color: var(--na-text);
+}
+.na-nav-link.active {
+  background: rgba(60, 114, 232, 0.18);
+  color: var(--na-accent);
+  box-shadow: inset 0 0 0 1px rgba(122, 173, 255, 0.22);
+}
+.na-nav-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 25%;
+  height: 50%;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: var(--na-accent);
+}
+
+/* Hero scroll-dot mouse animation */
+@keyframes scrollDot {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  60% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  61% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
