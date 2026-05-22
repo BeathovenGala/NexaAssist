@@ -16,8 +16,18 @@ async function bootstrap(): Promise<void> {
       transform: true,
     }),
   );
+  const corsOrigins = new Set<string>();
+  const configured = (process.env.FRONTEND_ORIGIN ?? 'http://localhost:3001')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+  for (const o of configured) corsOrigins.add(o);
+  if (process.env.NODE_ENV !== 'production') {
+    corsOrigins.add('http://localhost:3000');
+    corsOrigins.add('http://localhost:3001');
+  }
   app.enableCors({
-    origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:3000',
+    origin: [...corsOrigins],
     credentials: true,
   });
   // Lets nest start --watch release port 4000 on reload (avoids EADDRINUSE).
