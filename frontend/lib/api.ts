@@ -2,7 +2,10 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 const baseURL = `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api`;
 
-export const api = axios.create({ baseURL });
+export const api = axios.create({
+  baseURL,
+  timeout: 30_000,
+});
 
 let accessToken: string | null = null;
 let refreshToken: string | null = null;

@@ -50,6 +50,20 @@ export function apiErrorMessage(err: unknown, fallback: string): string {
       return d.errors.map((e) => String(e)).join(", ");
     }
   }
-  if (err instanceof Error) return err.message;
+  if (typeof err === "object" && err !== null && "code" in err) {
+    const code = String((err as { code?: string }).code);
+    if (code === "ECONNABORTED") {
+      return "Request timed out. Is the API running on port 4000?";
+    }
+    if (code === "ERR_NETWORK" || code === "ECONNREFUSED") {
+      return "Cannot reach the API. Start the backend (npm run start:dev in backend/).";
+    }
+  }
+  if (err instanceof Error) {
+    if (err.message.includes("timeout")) {
+      return "Request timed out. Is the API running on port 4000?";
+    }
+    return err.message;
+  }
   return fallback;
 }
