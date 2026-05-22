@@ -10,12 +10,25 @@ import {
   type QueueName,
 } from './queue-names';
 import type {
+  AnalyticsAggregationJobPayload,
+  AnalyticsInsightGenerationJobPayload,
+  CampaignAiCopyJobPayload,
+  CampaignAnalyticsSyncJobPayload,
+  CampaignExecutionJobPayload,
+  CampaignPosterJobPayload,
   CreateNotificationJobPayload,
   InventoryNotifyJobPayload,
   ProcessReminderJobPayload,
   ScheduleReminderJobPayload,
   SendEmailJobPayload,
+  SeoAiRecommendationJobPayload,
+  SeoPageAnalysisJobPayload,
+  SeoReportExportJobPayload,
+  SeoScanJobPayload,
   SystemCleanupJobPayload,
+  WhatsAppCallbackJobPayload,
+  WhatsAppRetryJobPayload,
+  WhatsAppSendJobPayload,
 } from './queue-job.types';
 
 @Injectable()
@@ -113,5 +126,57 @@ export class QueueProducerService implements OnModuleDestroy {
     return this.add(QUEUE_NAMES.system, payload.action, payload, {
       priority: 'LOW',
     });
+  }
+
+  enqueueCampaignAiCopy(payload: CampaignAiCopyJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.campaigns, 'campaign-ai-copy', payload, { priority: 'NORMAL' });
+  }
+
+  enqueueCampaignPoster(payload: CampaignPosterJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.campaigns, 'campaign-poster', payload, { priority: 'LOW' });
+  }
+
+  enqueueCampaignExecution(payload: CampaignExecutionJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.campaigns, 'campaign-execution', payload, { priority: 'HIGH' });
+  }
+
+  enqueueCampaignAnalyticsSync(payload: CampaignAnalyticsSyncJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.campaigns, 'campaign-analytics-sync', payload, { priority: 'LOW' });
+  }
+
+  enqueueWhatsAppSend(payload: WhatsAppSendJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.whatsapp, 'whatsapp-send', payload, { priority: 'HIGH' });
+  }
+
+  enqueueWhatsAppRetry(payload: WhatsAppRetryJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.whatsapp, 'whatsapp-retry', payload, { priority: 'NORMAL' });
+  }
+
+  enqueueWhatsAppCallback(payload: WhatsAppCallbackJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.whatsapp, 'whatsapp-callback', payload, { priority: 'HIGH' });
+  }
+
+  enqueueSeoScan(payload: SeoScanJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.seo, 'seo-scan', payload, { priority: 'NORMAL' });
+  }
+
+  enqueueSeoPageAnalysis(payload: SeoPageAnalysisJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.seo, 'seo-page-analysis', payload, { priority: 'NORMAL' });
+  }
+
+  enqueueSeoAiRecommendation(payload: SeoAiRecommendationJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.seo, 'seo-ai-recommendation', payload, { priority: 'LOW' });
+  }
+
+  enqueueSeoReportExport(payload: SeoReportExportJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.seo, 'seo-report-export', payload, { priority: 'LOW' });
+  }
+
+  enqueueAnalyticsAggregation(payload: AnalyticsAggregationJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.analytics, 'analytics-aggregation', payload, { priority: 'LOW' });
+  }
+
+  enqueueAnalyticsInsightGeneration(payload: AnalyticsInsightGenerationJobPayload): Promise<void> {
+    return this.add(QUEUE_NAMES.analytics, 'analytics-insight-generation', payload, { priority: 'LOW' });
   }
 }

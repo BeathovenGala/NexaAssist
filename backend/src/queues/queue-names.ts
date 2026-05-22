@@ -4,6 +4,10 @@ export const QUEUE_NAMES = {
   appointments: 'appointments',
   inventory: 'inventory',
   system: 'system',
+  campaigns: 'campaigns',
+  whatsapp: 'whatsapp',
+  seo: 'seo',
+  analytics: 'analytics',
 } as const;
 
 export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];
