@@ -50,7 +50,9 @@ import { TenantContextMiddleware } from './common/middleware/tenant-context.midd
       pinoHttp: {
         level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
         transport:
-          process.env.NODE_ENV !== 'production'
+          process.env.NODE_ENV !== 'production' &&
+          process.env.DISABLE_PINO_PRETTY !== '1' &&
+          process.stdout.isTTY
             ? {
                 target: 'pino-pretty',
                 options: { singleLine: true, colorize: true },
