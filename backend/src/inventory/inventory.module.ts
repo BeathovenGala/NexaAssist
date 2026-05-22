@@ -23,6 +23,11 @@ import { InventoryEventsService } from './inventory-events.service';
     InventoryTransactionsService,
     InventoryDashboardService,
   ],
-  exports: [InventoryEventsService, InventoryRequestsService, InventoryMovementsService],
+  exports: [
+    InventoryEventsService,
+    InventoryRequestsService,
+    InventoryMovementsService,
+    InventoryItemsService,
+  ],
 })
 export class InventoryModule {}

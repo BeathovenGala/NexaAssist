@@ -27,6 +27,12 @@ export class JoinRequestsController {
     return this.joinRequests.create(actor, dto.tenantSlug);
   }
 
+  @Get('mine')
+  @RequirePermissions('join-requests:create')
+  mine(@CurrentUser() actor: AuthUser) {
+    return this.joinRequests.listMine(actor);
+  }
+
   @Get('pending-count')
   @RequirePermissions('join-requests:manage')
   pendingCount(

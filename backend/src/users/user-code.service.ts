@@ -11,6 +11,7 @@ const ROLE_CODE_PREFIX: Record<RoleName, string> = {
   [RoleName.RECEPTIONIST]: 'RC',
   [RoleName.STAFF]: 'ST',
   [RoleName.CUSTOMER]: 'CU',
+  [RoleName.CHATBOT_EXEC]: 'EX',
 };
 
 @Injectable()

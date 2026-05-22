@@ -108,6 +108,27 @@ export class JoinRequestsService {
     return rows.map((r) => this.mapRow(r));
   }
 
+  async listMine(actor: AuthUser) {
+    const rows = await this.prisma.tenantJoinRequest.findMany({
+      where: { userId: actor.id },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        tenant: { select: { id: true, name: true, slug: true } },
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            userCode: true,
+          },
+        },
+      },
+      take: 200,
+    });
+    return rows.map((r) => this.mapRow(r));
+  }
+
   async pendingCount(actor: AuthUser, tenantIdQuery?: string) {
     const tenantId = this.resolveListTenantId(actor, tenantIdQuery);
     if (!tenantId) {
