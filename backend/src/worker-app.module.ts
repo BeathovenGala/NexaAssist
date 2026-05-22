@@ -8,6 +8,8 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { EmailsModule } from './emails/emails.module';
 import { WorkerModule } from './workers/worker.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { SeoModule } from './seo/seo.module';
+import { StorageModule } from './common/storage/storage.module';
 
 @Module({
   imports: [
@@ -25,10 +27,12 @@ import { SchedulerModule } from './scheduler/scheduler.module';
       },
     }),
     ScheduleModule.forRoot(),
+    StorageModule,
     PrismaModule,
     QueuesModule,
     NotificationsModule,
     EmailsModule,
+    SeoModule,
     WorkerModule,
     SchedulerModule,
   ],

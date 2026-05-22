@@ -7,11 +7,15 @@ import {
   DEFAULT_JOB_OPTIONS,
   QUEUE_NAMES,
 } from '../queues/queue-names';
-import { NotificationProcessor } from './processors/notification.processor';
-import { EmailProcessor } from './processors/email.processor';
+import { AnalyticsProcessor } from './processors/analytics.processor';
 import { AppointmentProcessor } from './processors/appointment.processor';
+import { CampaignProcessor } from './processors/campaign.processor';
+import { EmailProcessor } from './processors/email.processor';
 import { InventoryProcessor } from './processors/inventory.processor';
+import { NotificationProcessor } from './processors/notification.processor';
+import { SeoProcessor } from './processors/seo.processor';
 import { SystemProcessor } from './processors/system.processor';
+import { WhatsAppProcessor } from './processors/whatsapp.processor';
 
 @Injectable()
 export class WorkerRunnerService implements OnModuleInit, OnModuleDestroy {
@@ -27,6 +31,10 @@ export class WorkerRunnerService implements OnModuleInit, OnModuleDestroy {
     private readonly appointmentProcessor: AppointmentProcessor,
     private readonly inventoryProcessor: InventoryProcessor,
     private readonly systemProcessor: SystemProcessor,
+    private readonly campaignProcessor: CampaignProcessor,
+    private readonly whatsappProcessor: WhatsAppProcessor,
+    private readonly seoProcessor: SeoProcessor,
+    private readonly analyticsProcessor: AnalyticsProcessor,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -75,6 +83,26 @@ export class WorkerRunnerService implements OnModuleInit, OnModuleDestroy {
       new Worker(
         QUEUE_NAMES.system,
         async (job) => this.systemProcessor.process(job),
+        workerOpts,
+      ),
+      new Worker(
+        QUEUE_NAMES.campaigns,
+        async (job) => this.campaignProcessor.process(job),
+        workerOpts,
+      ),
+      new Worker(
+        QUEUE_NAMES.whatsapp,
+        async (job) => this.whatsappProcessor.process(job),
+        workerOpts,
+      ),
+      new Worker(
+        QUEUE_NAMES.seo,
+        async (job) => this.seoProcessor.process(job),
+        workerOpts,
+      ),
+      new Worker(
+        QUEUE_NAMES.analytics,
+        async (job) => this.analyticsProcessor.process(job),
         workerOpts,
       ),
     );
