@@ -7,6 +7,7 @@
     "dev:fresh": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && next dev --turbopack --port 3001",
     "dev:webpack": "next dev --port 3001",
     "build": "next build",
+    "prestart": "node -e \"try{const m=require('./.next/routes-manifest.json');if(!Array.isArray(m.dataRoutes))throw 0}catch{console.error('\\n  Production build required. Run: npm run build\\n');process.exit(1)}\"",
     "start": "next start --port 3001",
     "lint": "eslint"
   },

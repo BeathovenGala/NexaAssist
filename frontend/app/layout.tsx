@@ -21,7 +21,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "NexaAssist",
-  description: "NexaAssist — centralized AI-powered business operations platform.",
+  description:
+    "One place for scheduling, inventory, campaigns, messaging, and AI. Multi-tenant operations for clinics, retail, and service teams.",
 };
 
 export default function RootLayout({

@@ -4,10 +4,74 @@ export const BRAND = {
 } as const;
 
 export const NAV_LINKS = [
-  { label: "Home", href: "#top" },
-  { label: "Product", href: "#features" },
-  { label: "Narrative", href: "#narrative" },
+  { label: "Product", href: "#product", hasMenu: true },
+  { label: "Resources", href: "#features", hasMenu: true },
+  { label: "Pricing", href: "#pricing", hasMenu: false },
+  { label: "Security", href: "#security", hasMenu: false },
+] as const;
+
+export const NAV_FOOTER_LINKS = [
   { label: "Contact", href: "mailto:hello@nexaassist.com" },
+] as const;
+
+export const PRICING_SECTION = {
+  eyebrow: "Pricing",
+  title: "Plans that scale with your operations",
+  subtitle:
+    "Start with the modules you need. Upgrade as locations, staff, and outreach grow—without switching platforms.",
+} as const;
+
+export const PRICING_TIERS = [
+  {
+    id: "starter",
+    name: "Starter",
+    description: "For a single location getting off spreadsheets.",
+    price: "Free",
+    period: "",
+    features: [
+      "Scheduling & calendar",
+      "Up to 5 team members",
+      "Basic inventory tracking",
+      "Email notifications",
+    ],
+    ctaLabel: "Get started",
+    ctaModal: "register" as const,
+    highlighted: false,
+  },
+  {
+    id: "growth",
+    name: "Growth",
+    description: "For teams running campaigns and multi-role workflows.",
+    price: "$49",
+    period: "/ seat / mo",
+    features: [
+      "Everything in Starter",
+      "AI assistant with tools",
+      "Campaigns & WhatsApp batches",
+      "Analytics & SEO audits",
+      "Priority support",
+    ],
+    ctaLabel: "Start free trial",
+    ctaModal: "register" as const,
+    highlighted: true,
+  },
+  {
+    id: "enterprise",
+    name: "Enterprise",
+    description: "For multi-location groups with custom governance.",
+    price: "Custom",
+    period: "",
+    features: [
+      "Unlimited locations",
+      "SSO & advanced RBAC",
+      "Dedicated worker capacity",
+      "Custom integrations",
+      "SLA & onboarding",
+    ],
+    ctaLabel: "Contact sales",
+    ctaModal: "login" as const,
+    highlighted: false,
+  },
 ] as const;
 
 export const ROUTES = {
@@ -20,197 +84,154 @@ export const ROUTES = {
   join: "/join",
 } as const;
 
+export const HERO_VIDEO_BADGE = {
+  label: "Watch the platform tour",
+  href: "#features",
+} as const;
+
 export const HERO = {
-  badge: "NexaAssist OS",
-  headline: "Unified intelligence for modular business operations.",
-  headlineLines: [
-    "Unified intelligence",
-    "for modular business operations.",
-  ] as const,
-  headlineAccent: "intelligence",
+  eyebrow: "NexaAssist",
+  headline: "One place for scheduling, inventory, campaigns, messaging, and AI.",
   subcopy:
-    "Orchestrate appointments, inventory, campaigns, and AI-assisted workflows from one secure multi-tenant workspace.",
+    "Run appointments, stock, outreach, and an AI assistant from one secure workspace—built for multi-location clinics, retail, and service teams.",
   ctas: {
     primary: { label: "Get started", href: ROUTES.register },
     secondary: { label: "Sign in", href: ROUTES.login },
-    tertiary: { label: "Client join", href: ROUTES.join },
+    tertiary: { label: "Join as a client", href: ROUTES.join },
     dashboard: { label: "Open dashboard", href: ROUTES.dashboard },
   },
-  scrollHint: "Scroll to explore the platform",
 } as const;
 
-/** Rotating monitor status lines (Track B flicker cycle). */
-export const screenStates = [
-  "NexaAssist OS",
-  "Tenant secured",
-  "Status: operational",
-  "Assistant ready",
-  "Appointments",
-  "Inventory",
-  "Chatbot",
-  "Campaigns",
-  "Live queue",
-  "Low stock alert",
-  "New appointment slot available",
-] as const;
-
-export const INTRO = {
-  label: "NexaAssist initializing",
-  sessionKey: "nexaassist_intro_seen",
+export const TRUST_STRIP = {
+  label: "Built for appointment-heavy and stock-sensitive teams",
+  roles: [
+    "Clinics",
+    "Retail",
+    "Service businesses",
+    "Multi-location ops",
+  ] as const,
 } as const;
 
-export const FEATURE_CARDS = [
+export const PILLARS = [
   {
-    id: "appointments",
-    title: "Appointments",
-    summary: "Unified scheduling and booking",
-    body: "Calendars, slots, service types, and status history in one tenant-scoped flow. Teams see the same truth from booking through completion.",
-    tag: "// scheduling",
+    id: "scheduling",
+    title: "Scheduling",
+    summary: "Calendars, availability, booking, and status in one flow",
+    icon: "calendar" as const,
   },
   {
     id: "inventory",
     title: "Inventory",
-    summary: "Stock you can trust",
-    body: "Movements, thresholds, restock requests, and alerts surfaced before shortages disrupt operations. Every adjustment leaves an audit trail.",
-    tag: "// stock_control",
+    summary: "Stock levels, movements, alerts, and restock requests",
+    icon: "box" as const,
   },
   {
-    id: "chatbot",
-    title: "Chatbot",
-    summary: "Assistant with guardrails",
-    body: "Tenant-scoped tools, safe actions, and operational answers — not a generic chat widget. Escalation paths stay inside your RBAC model.",
-    tag: "// assistant",
+    id: "assistant",
+    title: "AI assistant",
+    summary: "Tenant-scoped chat with safe tools—not a generic widget",
+    icon: "sparkles" as const,
   },
   {
     id: "campaigns",
     title: "Campaigns",
-    summary: "Outreach with accountability",
-    body: "Queues, channels, and delivery signals tied to real business outcomes. Campaign health maps to inventory and appointment load, not vanity metrics.",
-    tag: "// outreach",
+    summary: "Create, approve, and run marketing with generated assets",
+    icon: "megaphone" as const,
+  },
+  {
+    id: "whatsapp",
+    title: "WhatsApp",
+    summary: "Templates, batches, and delivery logs in one place",
+    icon: "message" as const,
+  },
+  {
+    id: "analytics",
+    title: "Analytics",
+    summary: "Appointments, inventory, campaigns, chat, and SEO in one view",
+    icon: "chart" as const,
   },
 ] as const;
 
-export const NARRATIVE_CHAPTERS = [
+export const FEATURE_SHOWCASE = [
   {
-    id: "multi-tenant",
-    anchor: "chapter-multi-tenant",
-    label: "// multi_tenant_workspace",
-    title: "Every tenant operates in isolation — without operating in silos.",
-    body: "NexaAssist partitions data, configuration, and modules per organization while preserving a single operational vocabulary. Admins onboard locations, brands, or business units without duplicating infrastructure.",
-    askPlaceholder: "Ask about tenant boundaries and data isolation…",
-  },
-  {
-    id: "rbac",
-    anchor: "chapter-rbac",
-    label: "// role_based_access",
-    title: "Roles that match how your team actually works.",
-    body: "Granular permissions gate appointments, inventory adjustments, campaign sends, and assistant actions. Owners configure policies once; frontline staff see only what their role requires.",
-    askPlaceholder: "Ask about roles, invites, and approval flows…",
-  },
-  {
-    id: "appointments",
-    anchor: "chapter-appointments",
-    label: "// appointment_workflow",
-    title: "From availability to confirmation — one continuous thread.",
-    body: "Service types, provider calendars, slot rules, and booking surfaces share the same backend state. Status history and handoffs stay visible to coordinators and floor staff alike.",
-    askPlaceholder: "Ask about slots, service types, and booking…",
+    id: "scheduling",
+    title: "Scheduling that stays in sync",
+    body: "Service types, provider calendars, and a booking wizard share the same backend state. Coordinators and floor staff see confirmations, changes, and handoffs without reconciling separate tools.",
+    bullets: [
+      "Provider availability and slot rules in one calendar",
+      "Booking wizard for staff and approved clients",
+      "Status history from request through completion",
+    ],
+    mockup: "calendar" as const,
   },
   {
     id: "inventory",
-    anchor: "chapter-inventory",
-    label: "// inventory_monitoring",
-    title: "Thresholds that speak before shelves go quiet.",
-    body: "Movements, categories, and restock requests roll into alerts your team can action in context. Low-stock signals respect tenant scope and tie back to the items that matter for each location.",
-    askPlaceholder: "Ask about inventory thresholds and restock…",
+    title: "Inventory before shelves go quiet",
+    body: "Movements, thresholds, and restock requests roll into alerts your team can action in context. Every adjustment leaves an audit trail tied to the right location and role.",
+    bullets: [
+      "Low-stock alerts with tenant-scoped thresholds",
+      "Restock requests with approval flows",
+      "Movements with reason codes and responsible users",
+    ],
+    mockup: "inventory" as const,
   },
   {
-    id: "assistant",
-    anchor: "chapter-assistant",
-    label: "// ai_assistant_flow",
-    title: "An assistant that executes — within guardrails you define.",
-    body: "Operational questions route through tenant-scoped tools with safe defaults. The assistant summarizes queue health, suggests next actions, and defers to humans when confidence or policy requires it.",
-    askPlaceholder: "Ask about assistant tools and safe actions…",
-  },
-  {
-    id: "notifications",
-    anchor: "chapter-notifications",
-    label: "// notification_escalation",
-    title: "Signals that escalate with intent, not noise.",
-    body: "Appointment changes, stock events, and campaign milestones surface through channels your operators already monitor. Severity and routing follow rules you configure — not a flood of undifferentiated pings.",
-    askPlaceholder: "Ask about alerts, channels, and escalation…",
-  },
-  {
-    id: "campaigns",
-    anchor: "chapter-campaigns",
-    label: "// campaign_generation",
-    title: "Campaigns born from live operational context.",
-    body: "Outreach queues respect inventory and scheduling reality. Delivery analytics connect to outcomes your leadership tracks — fill rates, conversions, and follow-through — not opens alone.",
-    askPlaceholder: "Ask about campaign queues and delivery…",
+    id: "outreach",
+    title: "Outreach tied to operations",
+    body: "Campaigns and WhatsApp batches respect real availability and stock posture. Delivery signals connect to outcomes your leadership tracks—not vanity metrics alone.",
+    bullets: [
+      "Campaign creation, approval, and scheduled sends",
+      "WhatsApp templates, batches, and delivery logs",
+      "Queues informed by appointments and inventory",
+    ],
+    mockup: "campaigns" as const,
   },
 ] as const;
 
-export const NARRATIVE_BLOCKS = [
-  {
-    id: "operations-command",
-    eyebrow: "Operations command",
-    title: "One workspace for modules that used to live in separate tools.",
-    body: "NexaAssist unifies scheduling, stock, assistant workflows, and outreach under shared tenancy and identity. Operators switch contexts without re-authenticating or reconciling conflicting numbers across spreadsheets.",
-    bullets: [
-      "Module toggles per tenant — enable only what you run today",
-      "Consistent status language across appointments and inventory",
-      "Dashboard entry points that respect role and location",
-    ],
-  },
-  {
-    id: "clinical-retail",
-    eyebrow: "Clinic & retail ready",
-    title: "Built for appointment-heavy and stock-sensitive businesses.",
-    body: "Whether you run a multi-chair clinic or a distributed retail network, the same core primitives apply: bookable time, countable stock, accountable outreach. Configuration adapts; the data model does not fracture.",
-    bullets: [
-      "Service types and provider availability in one calendar fabric",
-      "Stock movements with reason codes and responsible users",
-      "Campaign segments informed by real availability and stock posture",
-    ],
-  },
-  {
-    id: "security-compliance",
-    eyebrow: "Security & governance",
-    title: "Enterprise posture without enterprise bloat.",
-    body: "Tenant isolation, invite flows, join requests, and audit-friendly histories are first-class — not bolted on after launch. Admins see who changed what, when, and under which role.",
-    bullets: [
-      "Pending-tenant and join-request flows for controlled onboarding",
-      "Invite tokens with expiration and scope",
-      "History timelines on appointments and inventory events",
-    ],
-  },
-  {
-    id: "scale-without-chaos",
-    eyebrow: "Scale with clarity",
-    title: "Add locations and modules without rewriting playbooks.",
-    body: "As you grow, NexaAssist keeps operational vocabulary stable. New sites inherit policies; new modules slot into the same navigation and permission model your team already learned.",
-    bullets: [
-      "Per-tenant module catalog with clear enablement",
-      "Join flows for clients and staff with approval gates",
-      "Settings surfaces that stay approachable as capability grows",
-    ],
-  },
-] as const;
+export const HOW_IT_WORKS = {
+  eyebrow: "How it works",
+  title: "From signup to daily operations in three steps",
+  steps: [
+    {
+      step: "01",
+      title: "Create your workspace",
+      body: "Register your organization and enable the modules you need today—scheduling, inventory, assistant, campaigns, and more.",
+    },
+    {
+      step: "02",
+      title: "Invite your team",
+      body: "Onboard staff with invite links or QR codes. Customers join through requests you approve, so access stays controlled.",
+    },
+    {
+      step: "03",
+      title: "Operate from one dashboard",
+      body: "Each role sees only what they need. Notifications, campaign sends, and SEO scans run in the background while your team works.",
+    },
+  ],
+} as const;
 
-/** @deprecated Track C — use NARRATIVE_CHAPTERS */
-export const PINNED_CHAPTERS = NARRATIVE_CHAPTERS;
-
-export const SCROLL_NARRATIVE = {
-  sectionId: "narrative",
-  wireframePlaceholderLabel: "Wireframe depth layer — Track C",
-  chapters: NARRATIVE_CHAPTERS,
+export const SECURITY_BAND = {
+  eyebrow: "Security & governance",
+  title: "Enterprise posture without enterprise bloat",
+  body: "Tenant isolation, role-based access, and audit-friendly histories are built in—not bolted on after launch.",
+  bullets: [
+    "Tenant-isolated data per organization",
+    "Role-based permissions on every module",
+    "Invite-only onboarding and audit-friendly histories",
+    "Background worker for notifications, campaigns, and SEO scans",
+  ],
 } as const;
 
 export const FINAL_CTA = {
-  eyebrow: "Ready to operate",
-  title: "Start operating from one workspace.",
-  body: "Create your tenant, invite your team, and enable the modules you need — appointments, inventory, assistant, and campaigns — without stitching together four separate products.",
+  title: "Stop stitching together four different tools.",
+  body: "Start with the modules you run today. Add campaigns, WhatsApp, and SEO when you're ready.",
   primary: { label: "Get started", href: ROUTES.register },
   secondary: { label: "Sign in", href: ROUTES.login },
+  trustBullets: [
+    "Tenant-isolated by default",
+    "Invite-only onboarding",
+    "Audit trails included",
+    "RBAC on every action",
+  ],
 } as const;
 
 export const FOOTER = {
@@ -220,4 +241,34 @@ export const FOOTER = {
     { label: "Terms", href: "#" },
     { label: "Contact", href: "mailto:hello@nexaassist.com" },
   ],
+} as const;
+
+export const PRODUCT_SECTION = {
+  eyebrow: "Product",
+  title: "Everything your team needs in one workspace",
+  subtitle:
+    "Replace scattered spreadsheets and single-purpose apps with modules that share the same data model and permissions.",
+} as const;
+
+export const FEATURES_SECTION = {
+  eyebrow: "Features",
+  title: "Depth where it matters",
+  subtitle: "Each module is designed for operators—not just dashboards for executives.",
+} as const;
+
+/** Legacy hero monitor animation (unused on current landing). */
+export const screenStates = [
+  "NexaAssist OS",
+  "Tenant secured",
+  "Status: operational",
+  "Assistant ready",
+  "Appointments",
+  "Inventory",
+  "Chatbot",
+  "Campaigns",
+] as const;
+
+export const INTRO = {
+  label: "NexaAssist initializing",
+  sessionKey: "nexaassist_intro_seen",
 } as const;
