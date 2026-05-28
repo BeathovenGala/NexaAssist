@@ -1,0 +1,296 @@
+# 1X Technologies — Website Analysis
+Source: https://1x.tech (homepage, /neo, /order, /careers, /about, /ai)
+Captured: May 27, 2026
+
+================================================================================
+BRAND NAME
+================================================================================
+1X (1X Technologies)
+
+Page title: "1X | Home Robots"
+Legal footer: "1X © 2026"
+Product name: NEO
+
+================================================================================
+TAGLINE
+================================================================================
+1X | Home Robots
+
+Homepage hero pairing:
+- NEO
+- Home Robot
+
+About page mission line:
+"Building a world where we do more of what we love, while our humanoid companions handle the rest."
+
+================================================================================
+ONE-LINER
+================================================================================
+We're an AI and robotics company based in Palo Alto, California. We create safe humanoid robots that do your chores and offer personalized assistance.
+
+(From site meta description / og:description)
+
+Product one-liner (NEO page):
+NEO takes on the boring and mundane tasks around the house so you can focus on what matters to you.
+
+================================================================================
+BRAND VOICE
+================================================================================
+- Calm, premium, human-centered — emphasizes safety, warmth, and everyday life (not industrial/sci-fi aggression).
+- Confident and visionary about general-purpose humanoids and "abundant society."
+- Plain, benefit-led copy: chores, time reclaimed, gentle design, learning over time.
+- Transparent about autonomy limits (Expert Mode, scheduled remote guidance, growing capabilities).
+- Minimal uppercase navigation labels; short section headers (UTILITY, DESIGN, COMPANION, INTELLIGENCE).
+- CEO quote style on launch materials: science fiction → product reality, closing the gap between imagination and daily life.
+- Legal/compliance tone in footers and email opt-in: "Opt in to receive updates. Unsubscribe anytime."
+
+================================================================================
+COLORS
+================================================================================
+Primary palette (from HTML/CSS tokens and inline styles):
+- neoFrost / theme-color: #F7F7F7 (light frost white — page background, footer)
+- gammaGrey: used for main scroll sections and muted footer text (gammaGrey/60, gammaGrey/5 borders)
+- neoGrey: nav accents, hamburger lines
+- Dark hero/video panels: #222
+- Logo / text on light: #41403C
+- Body text on light: black at 72% opacity (black/[0.72])
+- Frost text on dark: #F7F7F7 (neoFrost), with muted variants #f7f7f7/60 and #f7f7f7/50 for placeholders/disclaimers
+- CTA buttons: bg black/[0.72] with white text; alternate white/frost text on dark sections
+- NEO robot color options (product): Tan, Gray, Dark Brown
+- Product design language: organic neutral tones, soft knit suit
+
+Typography notes:
+- Uppercase nav: 11px, tracking 0.08em, font-medium
+- Hero headings: ~40–44px, tight negative tracking (-0.03em to -0.04em)
+- Utility class: neo-xs for small CTAs/labels
+
+================================================================================
+NAVIGATION MENU
+================================================================================
+Desktop header (centered, uppercase):
+- Neo → /neo
+- AI → /ai
+- Factory → /manufacturing
+- Stories → /discover
+- Careers → /careers
+- About → /about
+
+Header CTA (right):
+- Order → /order
+
+Mobile: hamburger menu (2-line icon), same links in overlay pattern.
+
+Footer link columns:
+Products/company: NEO, Careers, AI, Factory, About, Stories, Robot Fleet, Logs
+Social: LinkedIn, YouTube, Instagram, TikTok, X (@1x_tech)
+Legal/support: Terms of Use, Privacy & Cookies, Press, Support
+Other: Get Updates, Investor Relations
+
+================================================================================
+HERO SECTION
+================================================================================
+Homepage — Panel 1 (links to /neo):
+- Headline: "NEO" + "Home Robot"
+- Full-viewport (100svh) imagery: three NEO robots in different colors (Sanity CDN)
+- Background: #222 with object-cover photography
+- Floating CTA area: "$200 Deposit" + "Order" button → /order
+- CTA path in CMS: "Discover NEO"
+
+Homepage — Panel 2 (links to /careers):
+- Headline: "Careers" + "105 Open roles"
+- Imagery: NEO and man standing back to back
+- Background: bg-gammaGrey, 100vh sections
+- boxBlur decorative element on mobile title
+
+Homepage — Panel 3 (links to /neo):
+- Headline: "Experience" + "NEO"
+- Mux video background (looping, muted, playsinline) with poster thumbnail
+- Email capture: "Enter email" / "Get notified"
+
+NEO product page hero (/neo):
+- Title: NEO — Home Robot
+- $200 Deposit
+- Lead: Transform Your Home
+
+================================================================================
+SHADERS / BACKGROUNDS
+================================================================================
+(No custom WebGL/shader programs exposed in public HTML; backgrounds are media-driven.)
+
+- Full-bleed Sanity CDN WebP photography (hero stills, responsive mobile/desktop crops).
+- Mux-hosted background videos (preconnect to stream.mux.com, image.mux.com):
+  - Homepage "Experience NEO" section: playbackId neStydCcdA013wVjNgJb2wCjVHGQDPc0082024lFtNaoZE (~6.3s loop).
+  - Careers section video asset referenced in CMS (playbackId BWldRgZQvpAYzrV00edbiyFs00Fztq7gtzPbcnaFvwteg).
+- Solid fills: #222 (dark panels), gammaGrey, neoFrost #f7f7f7.
+- boxBlur class on Careers headline (frosted blur accent).
+- view-transition-name: header (header transition on navigation).
+- Video overlay pattern: opacity transition on video element over poster image.
+
+================================================================================
+SCROLL AREAS
+================================================================================
+Homepage:
+- Vertical stack of three full-viewport sections (100svh / 100vh), overflow-x-hidden on main.
+- Sticky/fixed header (52px mobile, 60px desktop) with opacity/color transitions on scroll.
+- Footer reveals on light #f7f7f7 after dark #222 block.
+
+NEO product page (/neo) — scroll narrative sections:
+1. Transform Your Home (value props: Helping Hand, Reclaim Time, Helpful Intelligence)
+2. UTILITY — Automate Your Chores (animated letter-spaced task examples: Walk to Person, Put Away Dishes, Clean Bathroom)
+3. Expert Mode
+4. DESIGN — Soft and Safe (Light, Quiet, Soft, Gentle; Emotive Ear Ring, Tendon-Driven, Knit Suit, etc.)
+5. COMPANION — Laugh and Learn (Smart, Contextual help, Fun)
+6. INTELLIGENCE — Grows With You
+7. Tabbed deep-dive: Utility | Design | AI | Hardware (spec tables, feature lists)
+8. Comes with: Charger, Lint Roller, Case
+9. FAQ accordion
+10. Experience NEO — Join waitlist / email CTA
+
+AI page (/ai):
+- Latest AI Updates timeline: World Model, Evaluation, Mobility, Introducing Redwood AI
+- Hiring block + Experience Humanoid subscribe
+
+About page:
+- Timeline scroll: 2014 Beginnings → 2026 Transform Your Home → 2027 Abilities Keeps Growing
+
+================================================================================
+FEATURES SECTION
+================================================================================
+Core product capabilities (NEO /neo):
+
+Transform Your Home:
+- Helping Hand — assistance with everyday tasks
+- Reclaim Time — automates household chores
+- Helpful Intelligence — useful insight in conversation
+
+Utility:
+- Chore lists and scheduling
+- Autonomous task examples (walk to person, put away dishes, clean bathroom)
+- Expert Mode — 1X Expert remotely supervises/ teaches new chores on schedule
+- Voice Interface (Companion)
+- Mobile app (schedule, remote comms, monitor)
+- Self-Charge
+- Remote Control (app & VR)
+- Emotive Ear Rings (status communication)
+- Boom Box (mobile Bluetooth speaker)
+
+Design:
+- Soft Body (3D lattice polymer)
+- Safe Movements (Tendon Drive)
+- Pinch Proof joints
+- Body Language understanding
+- Comfortable in living spaces
+- Machine washable nylon suit and shoes
+- Light, Quiet (quieter than modern refrigerator), Soft, Gentle
+
+Companion / Intelligence:
+- Built-in LLM Q&A, jokes, stories, games
+- Redwood AI — vision-language model for chores
+- Memory, audio/visual intelligence
+- Grows capabilities over time with use
+
+Hardware highlights:
+- Height 5'6", Weight 66 lbs, Lift 154 lbs, Carry 55 lbs
+- 22 DOF hands, tendon drive, IP68 hands / IP44 body
+- 1X NEO Cortex (Nvidia Jetson Thor), dual fisheye cameras, 4h runtime, self-charging
+
+AI company features (/ai):
+- 1X World Model as NEO cognitive core
+- Redwood AI for mobility + manipulation
+- Physics-grounded evaluation / hallucination of outcomes before actions
+
+================================================================================
+PRICING SECTION
+================================================================================
+Order page (/order) — two plan cards:
+
+Standard:
+- $499/mo — Subscription
+- Monthly Subscription
+- Starter Productivity Package
+- Standard Delivery
+
+Early Access:
+- $20,000 — Ownership
+- Ownership with 3-Year Warranty
+- Premium Support
+- Priority Delivery
+
+Checkout terms shown on site:
+- $200 Deposit Due Today
+- Fully Refundable
+- US Deliveries start 2026
+
+NEO page and homepage also surface: $200 Deposit
+
+Press/launch copy (discover): Early Access $20,000 priority delivery 2026; subscription ships later; colors Tan, Gray, Dark Brown.
+
+================================================================================
+CALLS TO ACTION
+================================================================================
+Primary:
+- Order → /order (header, homepage hero)
+- $200 Deposit (homepage hero label)
+- Order Now (order page)
+
+Lead capture:
+- Get notified / Enter email (homepage Experience NEO)
+- Join waitlist (NEO, About, AI footers)
+- Subscribe (AI page — Experience Humanoid)
+- Get Updates → /get-updates (footer)
+
+Secondary:
+- Discover NEO (CMS CTA on homepage panel)
+- Careers — "105 Open roles" → /careers
+- Product page tabs: Utility, Design, AI, Hardware
+- FAQ sections (expandable questions on /neo and /order)
+- Social follow links in footer
+- Apply to jobs on /careers (role listings by department)
+
+================================================================================
+CARDS
+================================================================================
+Homepage:
+- Full-viewport "cards" as linked articles (NEO, Careers, Experience NEO) — image + headline, no traditional bordered card chrome.
+
+Order page:
+- Standard plan card ($499/mo subscription benefits list)
+- Early Access plan card ($20,000 ownership benefits list)
+
+NEO product page:
+- Three-up value cards: Helping Hand, Reclaim Time, Helpful Intelligence
+- Design attribute cards: Light, Quiet, Soft, Gentle
+- Companion cards: Smart, Contextual help, Fun
+- Utility / Design / AI / Hardware tab panels with nested feature cards (Voice Interface, Mobile Interface, Soft Body, Redwood AI, etc.)
+- Spec "cards" in Hardware tables (Robot stats, DOF, Speed, Battery, Safety, etc.)
+- FAQ items as expandable cards
+
+Careers page:
+- Department group cards (1X LABS, Administration, AI, Facilities, Finance, Hardware Engineering, IT, Manufacturing, People & Talent, Quality, Robot Operations, Robot Services, Software Engineering, Supply Chain)
+- Job listing rows: role title + location (e.g., San Carlos, CA; Hayward, CA)
+
+AI page:
+- Dated update cards (World Model 1.12.26, Evaluation 6.16.25, Mobility 6.11.25, Redwood AI 6.10.25)
+- Hiring cards mirroring open AI roles
+
+About page:
+- Timeline milestone cards (2014 Beginnings through 2027 Abilities Keeps Growing)
+
+================================================================================
+FOOTER
+================================================================================
+Background: #f7f7f7 (neoFrost), top border gammaGrey/5, uppercase links.
+
+Left column:
+- 1X logo (SVG)
+- Copyright: 1X © 2026
+
+Link groups:
+- NEO, Careers, AI, Factory, About, Stories, Robot Fleet, Logs
+- LinkedIn, YouTube, Instagram, TikTok, X
+- Terms of Use, Privacy & Cookies, Press, Support
+- Get Updates, Investor Relations
+
+Site-wide email disclaimer (homepage): "Opt in to receive updates. Unsubscribe anytime."
+
+Company context (About): Palo Alto, California — AI and robotics company; mission general-purpose robots and abundant society; flagship product NEO for home.
