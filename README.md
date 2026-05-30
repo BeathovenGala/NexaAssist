@@ -217,6 +217,8 @@ Hosted stack (documented): **Vercel** (frontend) + **Render** (API + worker) + *
 - **401 after pulls** — Clear browser localStorage or sign in again.
 - **Demo seed fails** — With `SEED_DEMO_USERS=true`, set `SEED_DEMO_PASSWORD` too.
 - **Jobs never finish** — Start the worker and confirm `REDIS_URL` matches Docker Redis.
+- **Auth modal buttons require double-click** — Fixed: backdrop now uses `onClick` instead of `onMouseDown` for consistent event handling.
+- **Intro not showing correctly** — Fixed: children render behind overlay with proper z-index (10000), and pointer events are blocked during animation.
 
 ## Project layout
 
