@@ -3,7 +3,7 @@ dist/
 backend/dist/
 .next/
 .env
-.env.local
+
 backend/.env
 backend/tmp/
 frontend/.env.local
