@@ -12,6 +12,7 @@ import { slugify } from '../common/utils/slug.util';
 import { generateRefreshToken, hashToken } from '../common/utils/token.util';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserCodeService } from '../users/user-code.service';
+import { filterDemoPermissions } from './demo-access';
 import type { LoginDto, RegisterCustomerDto, RegisterTenantDto } from './dto/auth.dto';
 import type { AccessJwtPayload } from './strategies/jwt.strategy';
 
@@ -280,6 +281,15 @@ export class AuthService {
     };
   }
 
+  /** Creates a session for the configured demo admin user when demo seeding is enabled. */
+  async demoLogin() {
+    const demoEmail =
+      this.config.get('SEED_DEMO_ADMIN_EMAIL')?.trim()?.toLowerCase() ||
+      'tenantadmin.demo@seed.local';
+    const user = await this.ensureDemoUser(demoEmail);
+    return this.createSessionForUser(user.id);
+  }
+
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -309,7 +319,7 @@ export class AuthService {
     return {
       user: {
         ...this.mapUser(user),
-        permissions,
+        permissions: filterDemoPermissions(permissions, user.email),
       },
     };
   }
@@ -339,6 +349,76 @@ export class AuthService {
       },
     });
     return { accessToken, refreshToken: refreshRaw };
+  }
+
+  private async ensureDemoUser(email: string) {
+    const existing = await this.prisma.user.findUnique({
+      where: { email },
+      include: {
+        tenant: true,
+        userRoles: { include: { role: true } },
+      },
+    });
+    if (existing && existing.status === UserStatus.ACTIVE) {
+      return existing;
+    }
+
+    const tenantName = this.config.get('SEED_DEMO_TENANT_NAME')?.trim() || 'Demo Medical Group';
+    const tenantSlug = this.config.get('SEED_DEMO_TENANT_SLUG')?.trim() || 'demo-medical-group';
+    const passwordSeed = this.config.get('SEED_DEMO_PASSWORD')?.trim() || 'demo-access-only';
+    const rounds = Number(this.config.get('BCRYPT_ROUNDS') ?? 12);
+    const passwordHash = await bcrypt.hash(passwordSeed, rounds);
+
+    return this.prisma.$transaction(async (tx) => {
+      const tenant = await tx.tenant.upsert({
+        where: { slug: tenantSlug },
+        create: {
+          name: tenantName,
+          slug: tenantSlug,
+          businessType: 'Healthcare',
+        },
+        update: {
+          name: tenantName,
+        },
+      });
+
+      const role = await tx.role.findUniqueOrThrow({
+        where: { name: RoleName.TENANT_ADMIN },
+      });
+      const userCode = await this.userCodes.allocateNextCode(
+        tx,
+        tenant.id,
+        tenant.slug,
+        RoleName.TENANT_ADMIN,
+      );
+
+      return tx.user.upsert({
+        where: { email },
+        create: {
+          userCode,
+          tenantId: tenant.id,
+          email,
+          passwordHash,
+          firstName: 'Demo',
+          lastName: 'Admin',
+          status: UserStatus.ACTIVE,
+          userRoles: { create: [{ roleId: role.id }] },
+        },
+        update: {
+          tenantId: tenant.id,
+          passwordHash,
+          status: UserStatus.ACTIVE,
+          userRoles: {
+            deleteMany: {},
+            create: [{ roleId: role.id }],
+          },
+        },
+        include: {
+          tenant: true,
+          userRoles: { include: { role: true } },
+        },
+      });
+    });
   }
 
   private mapTenant(tenant: { id: string; name: string; slug: string; businessType: string | null; status: string }) {
