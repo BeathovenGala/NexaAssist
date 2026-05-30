@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend
 
-## Getting Started
+This is the Next.js app for NexaAssist. It serves the landing page, auth flows, and the dashboard UI on port `3001`.
 
-First, run the development server:
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Copy the example env file:
+
+```bash
+copy .env.example .env.local
+```
+
+3. Keep the backend running at `http://localhost:4000`.
+
+## Environment
+
+The frontend only needs a small set of public variables:
+
+- `NEXT_PUBLIC_API_URL` points the app at the NestJS API.
+- `NEXT_PUBLIC_DEMO_PASSWORD` enables the demo login CTA.
+- `NEXT_PUBLIC_SPLINE_HERO_SCENE` and `NEXT_PUBLIC_SPLINE_ORBIT_SCENE` override the landing page Spline scenes if needed.
+
+See [.env.example](.env.example) for the defaults.
+
+## Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3001.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+If you want a production-style check locally:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+For linting:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Terminal Plan
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Terminal | Command | When to use it |
+|----------|---------|----------------|
+| 1 | `npm run dev` | Run the Next.js app |
 
-## Deploy on Vercel
+You do not need a second frontend terminal. The backend API and worker live in `backend/`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Common Tasks
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Goal | Command |
+|------|---------|
+| Run the app | `npm run dev` |
+| Build the app | `npm run build` |
+| Start the built app | `npm run start` |
+| Lint the code | `npm run lint` |
+
+## Notes
+
+- The frontend talks to the API under `/api`.
+- Most authenticated flows expect the backend to be running first.
+- If demo login fails, check `NEXT_PUBLIC_DEMO_PASSWORD` and confirm the backend seed data exists.
