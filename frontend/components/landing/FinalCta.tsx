@@ -1,41 +1,128 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import { Check } from "lucide-react";
+
 import { AuthModalTrigger } from "@/components/auth/AuthModalTrigger";
 import { FINAL_CTA } from "./copy";
-import { LandingReveal } from "./LandingReveal";
+import { MarketingReveal } from "./MarketingReveal";
+import { cn } from "@/lib/utils";
 
 export function FinalCta() {
-  return (
-    <section id="cta" aria-labelledby="cta-heading" className="landing-section pb-28">
-      <div className="landing-container">
-        <LandingReveal>
-          <div className="landing-glass mx-auto max-w-3xl rounded-2xl px-8 py-16 text-center sm:px-12">
-            <h2 id="cta-heading" className="landing-display text-3xl sm:text-4xl">
-              {FINAL_CTA.title}
-            </h2>
-            <p className="landing-subhead mx-auto mt-4 max-w-xl">{FINAL_CTA.body}</p>
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const [reducedMotion, setReducedMotion] = useState(false);
 
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <AuthModalTrigger modal="register" className="landing-btn-primary px-8">
-                {FINAL_CTA.primary.label}
-              </AuthModalTrigger>
-              <AuthModalTrigger modal="login" className="landing-btn-secondary px-8">
-                {FINAL_CTA.secondary.label}
-              </AuthModalTrigger>
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const handler = () => setReducedMotion(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (reducedMotion || !cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ rx: -y * 10, ry: x * 12 });
+  };
+
+  const onLeave = () => setTilt({ rx: 0, ry: 0 });
+
+  return (
+    <section className="marketing-section overflow-hidden bg-black pb-28 pt-8">
+      <div className="marketing-container" style={{ perspective: "1200px" }}>
+        <MarketingReveal>
+          <div
+            ref={cardRef}
+            onPointerMove={onMove}
+            onPointerLeave={onLeave}
+            className="relative mx-auto max-w-3xl"
+            style={{
+              transform: reducedMotion
+                ? undefined
+                : `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+              transformStyle: "preserve-3d",
+              transition: reducedMotion ? undefined : "transform 0.35s ease-out",
+            }}
+          >
+            <div
+              className="pointer-events-none absolute -inset-4 rounded-[2rem] opacity-70 blur-2xl"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(139,92,246,0.35), rgba(56,189,248,0.2), rgba(167,139,250,0.15))",
+                transform: "translateZ(-40px)",
+              }}
+              aria-hidden
+            />
+
+            <div
+              className={cn(
+                "relative overflow-hidden rounded-[1.75rem] border border-white/15 p-10 text-center sm:p-12 md:p-14",
+                "bg-gradient-to-br from-[#12121a] via-[#0a0a12] to-[#050508]",
+                "shadow-[0_25px_80px_-20px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.06)_inset,0_40px_100px_-30px_rgba(139,92,246,0.25)]",
+              )}
+              style={{ transform: "translateZ(24px)" }}
+            >
+              <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[80%] -translate-x-1/2 rounded-full bg-violet-500/20 blur-3xl"
+                aria-hidden
+              />
+
+              <p
+                className="marketing-display text-3xl text-white sm:text-4xl md:text-[2.5rem] md:leading-tight"
+                style={{ transform: "translateZ(32px)" }}
+              >
+                {FINAL_CTA.title}
+              </p>
+              <p
+                className="mx-auto mt-4 max-w-lg text-base text-neutral-400 md:text-lg"
+                style={{ transform: "translateZ(20px)" }}
+              >
+                {FINAL_CTA.body}
+              </p>
+
+              <div
+                className="mt-10 flex flex-wrap justify-center gap-4"
+                style={{ transform: "translateZ(40px)" }}
+              >
+                <AuthModalTrigger modal="register" star>
+                  {FINAL_CTA.primary.label}
+                </AuthModalTrigger>
+                <AuthModalTrigger modal="login" star lightColor="#c4b5fd">
+                  {FINAL_CTA.secondary.label}
+                </AuthModalTrigger>
+              </div>
+
+              <ul
+                className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3"
+                style={{ transform: "translateZ(16px)" }}
+              >
+                {FINAL_CTA.trustBullets.map((b) => (
+                  <li
+                    key={b}
+                    className="flex items-center gap-2 text-xs tracking-wide text-neutral-500 uppercase"
+                  >
+                    <Check className="h-3.5 w-3.5 text-emerald-500/80" strokeWidth={2.5} />
+                    {b}
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <ul className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[var(--landing-muted)]">
-              {FINAL_CTA.trustBullets.map((item) => (
-                <li key={item} className="flex items-center gap-1.5">
-                  <span className="text-[var(--landing-accent)]" aria-hidden>
-                    ✓
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <div
+              className="pointer-events-none absolute -bottom-6 left-[8%] right-[8%] h-8 rounded-[100%] bg-black/80 blur-xl"
+              style={{ transform: "translateZ(-20px) rotateX(90deg)" }}
+              aria-hidden
+            />
           </div>
-        </LandingReveal>
+        </MarketingReveal>
       </div>
     </section>
   );

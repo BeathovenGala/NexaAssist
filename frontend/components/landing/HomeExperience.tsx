@@ -1,62 +1,38 @@
 "use client";
 
-import { FOOTER } from "./copy";
-import { FeatureShowcase } from "./FeatureShowcase";
+import { SiteIntroGate } from "./SiteIntroGate";
+import { FeaturesOrbitalSection } from "./FeaturesOrbitalSection";
 import { FinalCta } from "./FinalCta";
-import { HeroSection } from "./HeroSection";
-import { HowItWorks } from "./HowItWorks";
-import { LandingMotionProvider } from "./LandingMotionProvider";
-import { LandingNav } from "./LandingNav";
-import { LandingPillars } from "./LandingPillars";
+import { HowItWorksSection } from "./HowItWorksSection";
+import { MarketingHero } from "./MarketingHero";
+import { MarketingPricingSection } from "./MarketingPricingSection";
 import { SecurityBand } from "./SecurityBand";
-import { PricingSection } from "./PricingSection";
+import { ServicesBento } from "./ServicesBento";
+import { SiteFooter } from "./SiteFooter";
+import { SiteNav } from "./SiteNav";
 import { TrustStrip } from "./TrustStrip";
+import { ChatbotWidget } from "@/components/ui/chatbot-widget";
 
 export function HomeExperience() {
   return (
-    <LandingMotionProvider>
-      <div id="top" className="landing-page" data-theme="dark">
-        <div className="landing-starfield" aria-hidden />
-        <div className="landing-grain" aria-hidden />
+    <SiteIntroGate>
+      <div id="top" className="marketing-page relative">
+        <SiteNav />
 
-        <LandingNav />
-
-        <main className="relative z-2">
-          <HeroSection />
-          <div className="landing-content-stack">
-            <TrustStrip />
-            <LandingPillars />
-            <FeatureShowcase />
-            <PricingSection />
-            <HowItWorks />
-            <SecurityBand />
-            <FinalCta />
-          </div>
+        <main>
+          <MarketingHero />
+          <TrustStrip />
+          <FeaturesOrbitalSection />
+          <ServicesBento />
+          <MarketingPricingSection />
+          <HowItWorksSection />
+          <SecurityBand />
+          <FinalCta />
         </main>
 
-        <footer
-          className="relative z-2 border-t py-10"
-          style={{ borderColor: "var(--landing-border)" }}
-        >
-          <div className="landing-container flex flex-col items-center justify-between gap-4 text-sm sm:flex-row">
-            <p className="text-[var(--landing-muted)]">{FOOTER.copyright}</p>
-            <nav aria-label="Footer">
-              <ul className="flex flex-wrap justify-center gap-6">
-                {FOOTER.links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-[var(--landing-muted)] transition hover:text-[var(--landing-text)]"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-        </footer>
+        <SiteFooter />
+        <ChatbotWidget />
       </div>
-    </LandingMotionProvider>
+    </SiteIntroGate>
   );
 }

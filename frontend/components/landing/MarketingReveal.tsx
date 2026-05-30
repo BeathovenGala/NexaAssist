@@ -2,12 +2,14 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
-type LandingRevealProps = {
+import { cn } from "@/lib/utils";
+
+type MarketingRevealProps = {
   children: ReactNode;
   className?: string;
 };
 
-export function LandingReveal({ children, className = "" }: LandingRevealProps) {
+export function MarketingReveal({ children, className }: MarketingRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export function LandingReveal({ children, className = "" }: LandingRevealProps) 
           observer.disconnect();
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
     );
 
     observer.observe(el);
@@ -35,7 +37,7 @@ export function LandingReveal({ children, className = "" }: LandingRevealProps) 
   }, []);
 
   return (
-    <div ref={ref} data-landing-reveal className={className}>
+    <div ref={ref} data-marketing-reveal className={cn(className)}>
       {children}
     </div>
   );
