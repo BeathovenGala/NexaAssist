@@ -6,7 +6,7 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { FirstTimeServiceModal } from "@/components/dashboard/FirstTimeServiceModal";
 import { AssistantFloatingWidget } from "@/components/chat/AssistantFloatingWidget";
-import { useAuth, customerNeedsTenant } from "@/lib/auth";
+import { useAuth, customerNeedsTenant, isDemoUser } from "@/lib/auth";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -46,10 +46,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <div className="flex min-h-screen bg-[var(--na-bg)] text-[var(--na-text)]">
+      <div className="dashboard-shell flex min-h-screen bg-[var(--na-bg)] text-[var(--na-text)]">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between border-b border-[var(--na-border-subtle)] bg-[var(--na-header-bg)] px-4 backdrop-blur-2xl lg:px-8">
+          <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between border-b border-white/[0.08] bg-[var(--na-header-bg)] px-4 backdrop-blur-2xl lg:px-8">
             <div className="flex items-center gap-3">
               {/* Hamburger — mobile only */}
               <button
@@ -71,6 +71,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   {user.tenant?.name ?? "Platform"}
                 </span>
               </div>
+              {isDemoUser(user?.email) && (
+                <span className="rounded-full bg-amber-500/20 px-2.5 py-0.5 text-xs font-medium text-amber-400 ring-1 ring-amber-500/30">
+                  Demo Mode
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-3">
               <NotificationBell />

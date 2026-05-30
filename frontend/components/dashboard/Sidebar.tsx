@@ -4,6 +4,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import {
+  BarChart3,
+  Bot,
+  Box,
+  Calendar,
+  CalendarClock,
+  ClipboardList,
+  LayoutDashboard,
+  Megaphone,
+  MessageCircle,
+  Package,
+  Search,
+  Settings,
+  Shield,
+  Users,
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
+import {
   hasPermission,
   useAuth,
   type AuthUser,
@@ -11,10 +29,12 @@ import {
   customerNeedsTenant,
 } from "@/lib/auth";
 import { useJoinRequestsStore } from "@/lib/store/join-requests";
+import { cn } from "@/lib/utils";
 
 type NavItem = {
   href: string;
   label: string;
+  icon: LucideIcon;
   permission?: string;
   roles?: string[];
   hideForCustomerOnly?: boolean;
@@ -31,7 +51,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     id: "root",
     label: null,
-    items: [{ href: "/dashboard", label: "Dashboard" }],
+    items: [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }],
   },
   {
     id: "scheduling",
@@ -40,18 +60,21 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/appointments",
         label: "Appointments",
+        icon: Calendar,
         permission: "appointments:read",
         requiresTenant: true,
       },
       {
         href: "/dashboard/calendar",
         label: "Calendar",
+        icon: CalendarClock,
         permission: "calendar:read",
         requiresTenant: true,
       },
       {
         href: "/dashboard/availability",
         label: "Availability",
+        icon: ClipboardList,
         permission: "availability:read",
         requiresTenant: true,
         hideForCustomerOnly: true,
@@ -59,6 +82,7 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/service-types",
         label: "Service Types",
+        icon: Wrench,
         permission: "service-types:read",
         hideForCustomerOnly: true,
         requiresTenant: true,
@@ -66,6 +90,7 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/booking",
         label: "Book Appointment",
+        icon: Calendar,
         permission: "appointments:create",
         requiresTenant: true,
       },
@@ -78,12 +103,14 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/inventory",
         label: "Inventory",
+        icon: Package,
         permission: "inventory:read",
         requiresTenant: true,
       },
       {
         href: "/dashboard/operations",
         label: "Operations",
+        icon: Box,
         permission: "operations:read",
         requiresTenant: true,
       },
@@ -96,6 +123,7 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/assistant",
         label: "Assistant",
+        icon: Bot,
         permission: "chat:use",
         requiresTenant: true,
       },
@@ -108,6 +136,7 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/campaigns",
         label: "Campaigns",
+        icon: Megaphone,
         permission: "campaigns:read",
         requiresTenant: true,
         hideForCustomerOnly: true,
@@ -115,6 +144,7 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/whatsapp",
         label: "WhatsApp",
+        icon: MessageCircle,
         permission: "whatsapp:read",
         requiresTenant: true,
         hideForCustomerOnly: true,
@@ -122,6 +152,7 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/seo",
         label: "SEO Audit",
+        icon: Search,
         permission: "seo:read",
         requiresTenant: true,
         hideForCustomerOnly: true,
@@ -129,6 +160,7 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/analytics",
         label: "Analytics",
+        icon: BarChart3,
         permission: "analytics:read",
         requiresTenant: true,
         hideForCustomerOnly: true,
@@ -142,18 +174,21 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/users",
         label: "Users",
+        icon: Users,
         permission: "users:read",
         requiresTenant: true,
       },
       {
         href: "/dashboard/join-requests",
         label: "Join Requests",
+        icon: Shield,
         permission: "join-requests:manage",
         requiresTenant: true,
       },
       {
         href: "/dashboard/notifications",
         label: "Notifications",
+        icon: MessageCircle,
         permission: "notifications:read",
         requiresTenant: true,
       },
@@ -166,12 +201,14 @@ const NAV_GROUPS: NavGroup[] = [
       {
         href: "/dashboard/settings",
         label: "Settings",
+        icon: Settings,
         permission: "tenants:update",
         requiresTenant: true,
       },
       {
         href: "/dashboard/modules",
         label: "Modules",
+        icon: LayoutDashboard,
         permission: "tenants:update",
         requiresTenant: true,
       },
@@ -180,7 +217,7 @@ const NAV_GROUPS: NavGroup[] = [
 ];
 
 const PENDING_TENANT_NAV: NavItem[] = [
-  { href: "/dashboard/pending-tenant", label: "Organization access" },
+  { href: "/dashboard/pending-tenant", label: "Organization access", icon: Shield },
 ];
 
 function isVisible(item: NavItem, user: AuthUser | null): boolean {
@@ -203,16 +240,15 @@ export type SidebarProps = {
 
 function SidebarBrand({ user }: { user: AuthUser | null }) {
   return (
-    <div className="border-b border-[var(--na-border-subtle)] px-5 py-5">
+    <div className="border-b border-white/[0.08] px-5 py-5">
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-2.5 text-[15px] font-semibold tracking-tight text-[var(--na-text)] transition-opacity hover:opacity-80"
+        className="inline-flex items-center gap-2.5 text-[15px] font-semibold tracking-tight text-white transition-opacity hover:opacity-85"
       >
         <span
-          className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold text-white"
+          className="na-sidebar-brand-glow flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold text-white"
           style={{
-            background: "linear-gradient(135deg, #3c72e8 0%, #6232d4 100%)",
-            boxShadow: "0 0 12px rgba(60,114,232,0.5)",
+            background: "linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)",
           }}
         >
           N
@@ -220,14 +256,7 @@ function SidebarBrand({ user }: { user: AuthUser | null }) {
         NexaAssist
       </Link>
       {user?.tenant && (
-        <p
-          className="mt-2 truncate rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-widest"
-          style={{
-            color: "rgba(122,173,255,0.7)",
-            background: "rgba(60,114,232,0.08)",
-            border: "1px solid rgba(60,114,232,0.12)",
-          }}
-        >
+        <p className="mt-2 truncate rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white/50">
           {user.tenant.name}
         </p>
       )}
@@ -237,14 +266,48 @@ function SidebarBrand({ user }: { user: AuthUser | null }) {
 
 function SidebarFooter() {
   return (
-    <div className="border-t border-[var(--na-border-subtle)] px-4 py-3">
-      <p
-        className="text-[9px] font-medium uppercase tracking-[0.15em]"
-        style={{ color: "rgba(175,200,240,0.28)" }}
-      >
+    <div className="border-t border-white/[0.08] px-4 py-3">
+      <p className="text-[9px] font-medium uppercase tracking-[0.15em] text-white/30">
         NexaAssist OS
       </p>
     </div>
+  );
+}
+
+function NavLinkContent({
+  item,
+  active,
+  badge,
+  onNavigate,
+}: {
+  item: NavItem;
+  active: boolean;
+  badge: number | null;
+  onNavigate: () => void;
+}) {
+  const Icon = item.icon;
+  return (
+    <Link
+      href={item.href}
+      onClick={onNavigate}
+      className={cn("na-nav-link gap-3", active && "active", badge != null && "justify-between")}
+    >
+      <span className="flex min-w-0 items-center gap-3">
+        <Icon
+          className={cn(
+            "h-4 w-4 shrink-0",
+            active ? "text-white" : "text-white/45",
+          )}
+          strokeWidth={active ? 2.25 : 1.75}
+        />
+        <span className="truncate">{item.label}</span>
+      </span>
+      {badge != null && (
+        <span className="rounded-full border border-violet-400/30 bg-violet-500/15 px-2 py-0.5 text-[10px] font-bold text-violet-200">
+          {badge}
+        </span>
+      )}
+    </Link>
   );
 }
 
@@ -264,7 +327,6 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         stored[group.id] = val === "true";
       }
     }
-    // Auto-expand the group that contains the active route
     for (const group of NAV_GROUPS) {
       const hasActive = group.items.some((item) =>
         item.href === "/dashboard"
@@ -296,35 +358,31 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     onClose?.();
   }, [onClose]);
 
-  const asideClass = [
+  const asideClass = cn(
     "fixed inset-y-0 left-0 z-50 flex w-60 shrink-0 flex-col",
-    "border-r border-[var(--na-border-subtle)] bg-[var(--na-bg-deep)]",
+    "border-r border-white/[0.08] bg-black/90 backdrop-blur-xl",
     "transition-transform duration-200",
     "md:static md:translate-x-0 lg:w-[264px]",
     isOpen ? "translate-x-0" : "-translate-x-full",
-  ].join(" ");
+  );
 
   if (user && customerNeedsTenant(user)) {
     return (
       <>
         {isOpen && (
-          <div
-            className="fixed inset-0 z-40 bg-black/40 md:hidden"
-            onClick={onClose}
-          />
+          <div className="fixed inset-0 z-40 bg-black/60 md:hidden" onClick={onClose} />
         )}
         <aside className={asideClass}>
           <SidebarBrand user={user} />
           <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto p-2.5">
             {PENDING_TENANT_NAV.map((item) => (
-              <Link
+              <NavLinkContent
                 key={item.href}
-                href={item.href}
-                onClick={handleNavClick}
-                className={`na-nav-link ${pathname === item.href ? "active" : ""}`}
-              >
-                {item.label}
-              </Link>
+                item={item}
+                active={pathname === item.href}
+                badge={null}
+                onNavigate={handleNavClick}
+              />
             ))}
           </nav>
           <SidebarFooter />
@@ -336,10 +394,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   return (
     <>
       {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
-          onClick={onClose}
-        />
+        <div className="fixed inset-0 z-40 bg-black/60 md:hidden" onClick={onClose} />
       )}
       <aside className={asideClass}>
         <SidebarBrand user={user} />
@@ -350,23 +405,18 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
             const isGroupCollapsed = collapsed[group.id] ?? false;
 
-            // Root group (Dashboard only) — no collapsible header
             if (group.label === null) {
               return (
                 <div key={group.id} className="mb-1">
-                  {visibleItems.map((item) => {
-                    const active = pathname === item.href;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={handleNavClick}
-                        className={`na-nav-link ${active ? "active" : ""}`}
-                      >
-                        {item.label}
-                      </Link>
-                    );
-                  })}
+                  {visibleItems.map((item) => (
+                    <NavLinkContent
+                      key={item.href}
+                      item={item}
+                      active={pathname === item.href}
+                      badge={null}
+                      onNavigate={handleNavClick}
+                    />
+                  ))}
                 </div>
               );
             }
@@ -378,13 +428,14 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                   onClick={() => toggleGroup(group.id)}
                   className="flex w-full items-center justify-between px-2.5 pb-1 pt-3"
                 >
-                  <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-[var(--na-muted)]/50">
+                  <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-white/35">
                     {group.label}
                   </span>
                   <svg
-                    className={`h-3 w-3 text-[var(--na-muted)]/40 transition-transform duration-150 ${
-                      isGroupCollapsed ? "-rotate-90" : ""
-                    }`}
+                    className={cn(
+                      "h-3 w-3 text-white/30 transition-transform duration-150",
+                      isGroupCollapsed && "-rotate-90",
+                    )}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -405,25 +456,13 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                           ? pendingCount
                           : null;
                       return (
-                        <Link
+                        <NavLinkContent
                           key={item.href}
-                          href={item.href}
-                          onClick={handleNavClick}
-                          className={`na-nav-link justify-between ${active ? "active" : ""}`}
-                        >
-                          <span>{item.label}</span>
-                          {badge != null && (
-                            <span
-                              className="rounded-full px-2 py-0.5 text-[10px] font-bold"
-                              style={{
-                                background: "rgba(122,173,255,0.18)",
-                                color: "var(--na-accent)",
-                              }}
-                            >
-                              {badge}
-                            </span>
-                          )}
-                        </Link>
+                          item={item}
+                          active={!!active}
+                          badge={badge}
+                          onNavigate={handleNavClick}
+                        />
                       );
                     })}
                   </div>
