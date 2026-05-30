@@ -2,9 +2,10 @@
 
 import { Component, Suspense, lazy, type ReactNode } from "react";
 
+import { loadSplineModule } from "@/lib/load-spline-module";
 import { cn } from "@/lib/utils";
 
-const Spline = lazy(() => import("@splinetool/react-spline"));
+const Spline = lazy(() => loadSplineModule());
 
 export interface SplineSceneInnerProps {
   scene: string;

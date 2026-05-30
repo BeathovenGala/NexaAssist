@@ -50,7 +50,7 @@ export function ChatbotWidget() {
           </div>
           <div className="flex h-64 flex-col p-4">
             <div className="mb-3 w-fit max-w-[85%] rounded-2xl rounded-tl-sm bg-indigo-600 px-3 py-2 text-sm text-white">
-              Hi there! I'm your AI assistant. How can I help you manage your operations today?
+              Hi there! I&apos;m your AI assistant. How can I help you manage your operations today?
             </div>
             <div className="mt-auto">
               <div className="flex w-full items-center rounded-full border border-white/10 bg-white/5 px-4 py-2">

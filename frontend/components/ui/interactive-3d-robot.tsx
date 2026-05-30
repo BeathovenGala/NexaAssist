@@ -5,6 +5,7 @@ import { Component, useEffect, useState, type ReactNode } from "react";
 
 import { AnimatedRobotFallback } from "@/components/ui/animated-robot-fallback";
 import { cn } from "@/lib/utils";
+import { loadSplineModule } from "@/lib/load-spline-module";
 import { canUseWebGL } from "@/lib/webgl";
 
 export interface InteractiveRobotSplineProps {
@@ -46,7 +47,7 @@ function RobotSplineLoader({ className }: { className?: string }) {
   );
 }
 
-const Spline = dynamic(() => import("@splinetool/react-spline"), {
+const Spline = dynamic(() => loadSplineModule(), {
   ssr: false,
   loading: () => <RobotSplineLoader />,
 });

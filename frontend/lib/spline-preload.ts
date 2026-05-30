@@ -1,4 +1,5 @@
 import { SPLINE_ROBOT_SCENE } from "@/components/landing/copy";
+import { loadSplineModule } from "@/lib/load-spline-module";
 import { canUseWebGL } from "@/lib/webgl";
 
 let preloadStarted = false;
@@ -10,7 +11,7 @@ export function preloadSplineAssets(sceneUrl: string = SPLINE_ROBOT_SCENE): void
   preloadStarted = true;
 
   void Promise.all([
-    import("@splinetool/react-spline"),
+    loadSplineModule(),
     import("@splinetool/runtime"),
     fetch(sceneUrl, { mode: "cors", credentials: "omit" }).catch(() => undefined),
   ]);
