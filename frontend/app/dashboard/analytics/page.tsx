@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { apiGet, apiErrorMessage } from "@/lib/apiEnvelope";
+import { DashboardCard, DashboardCardLink } from "@/components/dashboard/DashboardCard";
 import type { GlobalKpis, AiInsight, DateRange } from "@/lib/types/analytics";
 
 const DATE_RANGES: { label: string; value: DateRange }[] = [
@@ -113,10 +113,7 @@ export default function AnalyticsDashboardPage() {
       {loading ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="na-card h-24 animate-pulse opacity-60"
-            />
+            <DashboardCard key={i} hover={false} className="h-24 animate-pulse opacity-60" />
           ))}
         </div>
       ) : error ? (
@@ -153,10 +150,7 @@ export default function AnalyticsDashboardPage() {
               color: "text-sky-400",
             },
           ].map((kpi) => (
-            <div
-              key={kpi.label}
-              className="na-card p-4"
-            >
+            <DashboardCard key={kpi.label} hover={false} className="p-4">
               <p className="text-xs font-medium uppercase tracking-wider text-[var(--na-muted)]">
                 {kpi.label}
               </p>
@@ -168,7 +162,7 @@ export default function AnalyticsDashboardPage() {
                 {kpi.value}
               </p>
               <p className="mt-1 text-xs text-[var(--na-muted)]">{data.kpis.periodLabel}</p>
-            </div>
+            </DashboardCard>
           ))}
         </div>
       ) : null}
@@ -180,10 +174,10 @@ export default function AnalyticsDashboardPage() {
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {MODULE_CARDS.map((card) => (
-            <Link
+            <DashboardCardLink
               key={card.label}
               href={card.href}
-              className={`na-card group p-5 transition hover:-translate-y-0.5 ${card.color}`}
+              className={`group p-5 ${card.color}`}
             >
               <h3 className="font-medium text-[var(--na-text)] group-hover:text-[var(--na-accent)]">
                 {card.label}
@@ -192,7 +186,7 @@ export default function AnalyticsDashboardPage() {
               <p className="mt-3 text-xs font-semibold text-[var(--na-accent)]">
                 View analytics →
               </p>
-            </Link>
+            </DashboardCardLink>
           ))}
         </div>
       </section>
@@ -210,10 +204,7 @@ export default function AnalyticsDashboardPage() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {data.insights.map((insight) => (
-              <div
-                key={insight.id}
-                className="na-card p-4"
-              >
+              <DashboardCard key={insight.id} hover={false} className="p-4">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[10px] font-bold uppercase text-[var(--na-accent)]">
                     {insight.module}
@@ -232,7 +223,7 @@ export default function AnalyticsDashboardPage() {
                 </div>
                 <h3 className="mt-2 text-sm font-medium text-[var(--na-text)]">{insight.title}</h3>
                 <p className="mt-1 text-xs text-[var(--na-muted)]">{insight.insight}</p>
-              </div>
+              </DashboardCard>
             ))}
           </div>
         </section>

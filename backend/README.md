@@ -1,99 +1,95 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This folder contains the NestJS API, Prisma schema, and the BullMQ worker that handles notifications, campaigns, SEO, WhatsApp, analytics, and other background jobs.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Setup
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+1. Install dependencies:
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
+2. Copy the example env file:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+copy .env.example .env
 ```
 
-## Run tests
+3. Start the local infrastructure from the repository root if it is not already running:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up -d
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+4. Apply the schema and seed local demo data if needed:
 
 ```bash
-$ npm install -g mau
-$ mau deploy
+npx prisma migrate dev
+npm run db:seed
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Environment
 
-## Resources
+The backend reads the following groups of variables:
 
-Check out a few resources that may come in handy when working with NestJS:
+- Core runtime: `PORT`, `NODE_ENV`, `WORKER_ENABLED`, `FRONTEND_ORIGIN`, `REDIS_URL`
+- Database: `DATABASE_URL`
+- Auth and throttling: `JWT_ACCESS_SECRET`, `JWT_ACCESS_EXPIRES_MINUTES`, `BCRYPT_ROUNDS`, `REFRESH_TOKEN_TTL_DAYS`, `THROTTLE_TTL_MS`, `THROTTLE_LIMIT`
+- AI and campaigns: `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`, `CAMPAIGNS_OPENROUTER_MODEL`, `CAMPAIGNS_OPENROUTER_IMAGE_MODEL`, `CAMPAIGNS_POLLINATIONS_FALLBACK`, `TOGETHER_API_KEY`, `TOGETHER_IMAGE_MODEL`
+- Storage: `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_ENDPOINT`, `S3_REGION`, `S3_PUBLIC_BASE_URL`
+- Email: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
+- WhatsApp: `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_API_VERSION`
+- Demo seeding: `SEED_DEMO_USERS`, `SEED_DEMO_PASSWORD`, `SEED_DEMO_ADMIN_EMAIL`, `SEED_DEMO_TENANT_NAME`, `SEED_DEMO_TENANT_SLUG`, `SEED_DEMO_TENANT_BUSINESS_TYPE`, and the role-specific demo emails
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+See [.env.example](.env.example) for the default values.
 
-## Support
+## Run
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+API in development mode:
 
-## Stay in touch
+```bash
+npm run start:dev
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Worker in development mode:
 
-## License
+```bash
+npm run start:worker:dev
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+The API listens on `http://localhost:4000` and mounts routes under `/api`.
+
+## Terminal Plan
+
+| Terminal | Command | What it does |
+|----------|---------|--------------|
+| 1 | `docker compose up -d` | Starts PostgreSQL and Redis |
+| 2 | `npm run start:dev` | Runs the HTTP API |
+| 3 | `npm run start:worker:dev` | Runs the background worker |
+
+If you only need the API, you can skip the worker terminal. Queue-backed features will remain pending until the worker is running.
+
+## Common Commands
+
+| Goal | Command |
+|------|---------|
+| Run API | `npm run start:dev` |
+| Run worker | `npm run start:worker:dev` |
+| Build production bundle | `npm run build` |
+| Start production bundle | `npm run start:prod` |
+| Run unit tests | `npm run test` |
+| Run e2e tests | `npm run test:e2e` |
+| Run coverage | `npm run test:cov` |
+| Format code | `npm run format` |
+| Lint code | `npm run lint` |
+| Generate Prisma client | `npm run prisma:generate` |
+| Apply Prisma migrations | `npm run prisma:migrate` |
+| Push Prisma schema | `npm run db:push` |
+| Seed local data | `npm run db:seed` |
+
+## Notes
+
+- `npm run db:seed` is destructive on the local database.
+- If you want a quieter dev log, keep `DISABLE_PINO_PRETTY=1` in the backend env.
+- The worker depends on Redis; if jobs are not processing, check `REDIS_URL` first.

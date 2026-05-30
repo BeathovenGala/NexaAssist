@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { hasSeenIntro } from "@/lib/intro-storage";
 
 export type AuthModalView = "login" | "register" | null;
 export type RegisterModalMode = "org" | "customer";
@@ -70,6 +71,13 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // If the intro hasn't been seen yet, avoid opening auth modals from URL params
+    try {
+      if (!hasSeenIntro()) return;
+    } catch {
+      // fall through if storage access fails
+    }
+
     const auth = searchParams.get("auth");
     if (auth === "login") {
       setView("login");

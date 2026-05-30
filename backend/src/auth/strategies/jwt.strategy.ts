@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from '../../prisma/prisma.service';
+import { filterDemoPermissions } from '../demo-access';
 
 export interface AccessJwtPayload {
   sub: string;
@@ -62,7 +63,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       email: user.email,
       tenantId: user.tenantId,
       roles,
-      permissions,
+      permissions: filterDemoPermissions(permissions, user.email),
       userCode: user.userCode,
     };
   }

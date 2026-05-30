@@ -35,6 +35,12 @@ export class AuthController {
   }
 
   @Public()
+  @Post('demo')
+  demo() {
+    return this.auth.demoLogin();
+  }
+
+  @Public()
   @Post('refresh')
   refresh(@Body() dto: RefreshTokenDto) {
     return this.auth.refresh(dto.refreshToken);

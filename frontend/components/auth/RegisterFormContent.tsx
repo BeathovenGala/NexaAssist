@@ -4,7 +4,6 @@ import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api, persistTokens } from "@/lib/api";
-import { apiErrorMessage } from "@/lib/apiEnvelope";
 import { useAuth, defaultDashboardPath } from "@/lib/auth";
 import { useAuthModal, type RegisterModalMode } from "@/lib/auth-modal";
 import { AuthField } from "@/components/auth/AuthField";
@@ -81,7 +80,7 @@ export function RegisterFormContent({ mode, onModeChange }: RegisterFormContentP
         adminLastName: adminLastName || undefined,
       });
       if (!data.success) {
-        setError(data.message ?? "Registration failed");
+        setError("Request sent to super admin for approval");
         return;
       }
       persistTokens(data.data.accessToken, data.data.refreshToken);
@@ -93,8 +92,8 @@ export function RegisterFormContent({ mode, onModeChange }: RegisterFormContentP
       const u = me.data.data.user;
       close();
       router.push(defaultDashboardPath(u.roles, u.tenantId));
-    } catch (err: unknown) {
-      setError(apiErrorMessage(err, "Registration failed"));
+    } catch {
+      setError("Request sent to super admin for approval");
     } finally {
       setLoading(false);
     }
@@ -112,7 +111,7 @@ export function RegisterFormContent({ mode, onModeChange }: RegisterFormContentP
         lastName: cLastName || undefined,
       });
       if (!data.success) {
-        setError(data.message ?? "Registration failed");
+        setError("Request sent to super admin for approval");
         return;
       }
       persistTokens(data.data.accessToken, data.data.refreshToken);
@@ -120,11 +119,7 @@ export function RegisterFormContent({ mode, onModeChange }: RegisterFormContentP
       if (tenantSlug) {
         const joinRes = await api.post("/join-requests", { tenantSlug });
         if (!joinRes.data.success) {
-          setError(
-            typeof joinRes.data.message === "string"
-              ? joinRes.data.message
-              : "Could not submit join request",
-          );
+          setError("Request sent to super admin for approval");
           return;
         }
       }
@@ -135,8 +130,8 @@ export function RegisterFormContent({ mode, onModeChange }: RegisterFormContentP
       const u = me.data.data.user;
       close();
       router.push(defaultDashboardPath(u.roles, u.tenantId));
-    } catch (err: unknown) {
-      setError(apiErrorMessage(err, "Registration failed"));
+    } catch {
+      setError("Request sent to super admin for approval");
     } finally {
       setLoading(false);
     }

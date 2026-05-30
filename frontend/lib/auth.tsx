@@ -110,6 +110,13 @@ export function isCustomerOnly(user: AuthUser | null): boolean {
   );
 }
 
+/**
+ * Check if user is in demo mode (demo seed account).
+ */
+export function isDemoUser(email?: string | null): boolean {
+  return Boolean(email && email.includes("demo@seed.local"));
+}
+
 /** Customer registered but not yet assigned to a tenant (join request pending). */
 export function customerNeedsTenant(user: AuthUser | null): boolean {
   return isCustomerOnly(user) && !user?.tenantId;

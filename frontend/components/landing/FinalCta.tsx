@@ -1,108 +1,129 @@
-"use client";
-
-import { AuthModalTrigger } from "@/components/auth/AuthModalTrigger";
-import { FINAL_CTA } from "./copy";
-
-export function FinalCta() {
-  return (
-    <section
-      id="cta"
-      aria-labelledby="cta-heading"
-      className="relative"
-      style={{ background: "rgba(3,5,18,0.98)" }}
-    >
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, rgba(80,110,200,0.22), transparent)" }}
-        aria-hidden
-      />
-
-      <div className="mx-auto max-w-[1280px] px-6 py-24 sm:px-12 sm:py-32">
-        <div className="na-glass-card relative overflow-hidden rounded-3xl px-8 py-20 text-center sm:px-16">
-          <div
-            className="pointer-events-none absolute -top-20 left-1/4 h-80 w-80 rounded-full opacity-30 blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(70,110,255,0.6), transparent 70%)" }}
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute -bottom-20 right-1/4 h-72 w-72 rounded-full opacity-20 blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(120,60,220,0.6), transparent 70%)" }}
-            aria-hidden
-          />
-
-          <div className="relative">
-            <p
-              className="font-mono text-[11px] font-medium uppercase tracking-[0.22em]"
-              style={{ color: "rgba(100,180,255,0.7)" }}
-            >
-              {FINAL_CTA.eyebrow}
-            </p>
-
-            <h2
-              id="cta-heading"
-              className="na-display mt-4 text-3xl tracking-tight text-white sm:text-5xl"
-              style={{ textShadow: "0 0 60px rgba(80,130,255,0.3)" }}
-            >
-              {FINAL_CTA.title}
-            </h2>
-
-            <p
-              className="mx-auto mt-5 max-w-xl text-base leading-relaxed sm:text-lg"
-              style={{ color: "rgba(175,200,240,0.62)" }}
-            >
-              {FINAL_CTA.body}
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <AuthModalTrigger
-                modal="register"
-                className="group relative inline-flex min-h-[48px] items-center justify-center overflow-hidden rounded-full px-10 py-4 text-sm font-semibold text-white transition-all duration-300 hover:scale-[1.03]"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(60,110,230,0.9) 0%, rgba(90,50,210,0.9) 100%)",
-                  border: "1px solid rgba(120,160,255,0.3)",
-                  boxShadow: "0 0 30px rgba(70,130,230,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
-                }}
-              >
-                <span className="relative z-10">{FINAL_CTA.primary.label}</span>
-                <span
-                  className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(85,145,255,0.9) 0%, rgba(110,65,235,0.9) 100%)",
-                  }}
-                />
-              </AuthModalTrigger>
-
-              <AuthModalTrigger
-                modal="login"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-full border px-10 py-4 text-sm font-semibold transition-all duration-300 hover:scale-[1.03] hover:bg-white/[0.06]"
-                style={{
-                  borderColor: "rgba(150,185,255,0.28)",
-                  color: "rgba(200,220,255,0.82)",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                {FINAL_CTA.secondary.label}
-              </AuthModalTrigger>
-            </div>
-
-            <div
-              className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs"
-              style={{ color: "rgba(140,165,220,0.45)" }}
-            >
-              {["Tenant-isolated by default", "Invite-only onboarding", "Audit trails included", "RBAC on every action"].map(
-                (item) => (
-                  <span key={item} className="flex items-center gap-1.5">
-                    <span style={{ color: "rgba(80,160,255,0.6)" }}>✓</span>
-                    {item}
-                  </span>
-                ),
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Check } from "lucide-react";
+
+import { AuthModalTrigger } from "@/components/auth/AuthModalTrigger";
+import { FINAL_CTA } from "./copy";
+import { MarketingReveal } from "./MarketingReveal";
+import { cn } from "@/lib/utils";
+
+export function FinalCta() {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const handler = () => setReducedMotion(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (reducedMotion || !cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ rx: -y * 10, ry: x * 12 });
+  };
+
+  const onLeave = () => setTilt({ rx: 0, ry: 0 });
+
+  return (
+    <section className="marketing-section overflow-hidden bg-black pb-28 pt-8">
+      <div className="marketing-container" style={{ perspective: "1200px" }}>
+        <MarketingReveal>
+          <div
+            ref={cardRef}
+            onPointerMove={onMove}
+            onPointerLeave={onLeave}
+            className="relative mx-auto max-w-3xl"
+            style={{
+              transform: reducedMotion
+                ? undefined
+                : `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+              transformStyle: "preserve-3d",
+              transition: reducedMotion ? undefined : "transform 0.35s ease-out",
+            }}
+          >
+            <div
+              className="pointer-events-none absolute -inset-4 rounded-[2rem] opacity-70 blur-2xl"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(139,92,246,0.35), rgba(56,189,248,0.2), rgba(167,139,250,0.15))",
+                transform: "translateZ(-40px)",
+              }}
+              aria-hidden
+            />
+
+            <div
+              className={cn(
+                "relative overflow-hidden rounded-[1.75rem] border border-white/15 p-10 text-center sm:p-12 md:p-14",
+                "bg-gradient-to-br from-[#12121a] via-[#0a0a12] to-[#050508]",
+                "shadow-[0_25px_80px_-20px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.06)_inset,0_40px_100px_-30px_rgba(139,92,246,0.25)]",
+              )}
+              style={{ transform: "translateZ(24px)" }}
+            >
+              <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[80%] -translate-x-1/2 rounded-full bg-violet-500/20 blur-3xl"
+                aria-hidden
+              />
+
+              <p
+                className="marketing-display text-3xl text-white sm:text-4xl md:text-[2.5rem] md:leading-tight"
+                style={{ transform: "translateZ(32px)" }}
+              >
+                {FINAL_CTA.title}
+              </p>
+              <p
+                className="mx-auto mt-4 max-w-lg text-base text-neutral-400 md:text-lg"
+                style={{ transform: "translateZ(20px)" }}
+              >
+                {FINAL_CTA.body}
+              </p>
+
+              <div
+                className="mt-10 flex flex-wrap justify-center gap-4"
+                style={{ transform: "translateZ(40px)" }}
+              >
+                <AuthModalTrigger modal="register" star>
+                  {FINAL_CTA.primary.label}
+                </AuthModalTrigger>
+                <AuthModalTrigger modal="login" star lightColor="#c4b5fd">
+                  {FINAL_CTA.secondary.label}
+                </AuthModalTrigger>
+              </div>
+
+              <ul
+                className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-3"
+                style={{ transform: "translateZ(16px)" }}
+              >
+                {FINAL_CTA.trustBullets.map((b) => (
+                  <li
+                    key={b}
+                    className="flex items-center gap-2 text-xs tracking-wide text-neutral-500 uppercase"
+                  >
+                    <Check className="h-3.5 w-3.5 text-emerald-500/80" strokeWidth={2.5} />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div
+              className="pointer-events-none absolute -bottom-6 left-[8%] right-[8%] h-8 rounded-[100%] bg-black/80 blur-xl"
+              style={{ transform: "translateZ(-20px) rotateX(90deg)" }}
+              aria-hidden
+            />
+          </div>
+        </MarketingReveal>
+      </div>
+    </section>
+  );
+}
