@@ -2,7 +2,7 @@
 export function OrbitTimelinePlaceholder() {
   return (
     <div
-      className="flex h-[min(100vh,920px)] min-h-[min(100vh,920px)] w-full flex-col items-center justify-center bg-black py-12"
+      className="flex h-[min(100vh,920px)] min-h-[min(100vh,920px)] w-full flex-col items-center justify-center bg-[#1E1245] py-12"
       aria-hidden
     >
       <div className="relative flex h-[min(88vw,48rem)] w-[min(88vw,48rem)] items-center justify-center">

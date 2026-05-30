@@ -15,7 +15,7 @@ export interface TimelineItem {
   date: string;
   content: string;
   category: string;
-  icon: LucideIcon;
+  icon: React.ElementType<any>;
   relatedIds: number[];
   status: "completed" | "in-progress" | "pending";
   energy: number;
@@ -147,7 +147,7 @@ export function RadialOrbitalTimeline({
     const updateRadius = () => {
       const w = window.innerWidth;
       setOrbitRadius(w < 640 ? 190 : w < 1024 ? 270 : 360);
-      setHubSize(w < 640 ? 220 : w < 1024 ? 300 : 380);
+      setHubSize(w < 640 ? 150 : w < 1024 ? 200 : 250);
     };
     updateRadius();
     window.addEventListener("resize", updateRadius);
@@ -199,9 +199,9 @@ export function RadialOrbitalTimeline({
       case "in-progress":
         return "text-[var(--mk-ink)] bg-white border-[var(--mk-ink)]";
       case "pending":
-        return "text-white bg-black/40 border-white/50";
+        return "text-white bg-[#1E1245]/40 border-white/50";
       default:
-        return "text-white bg-black/40 border-white/50";
+        return "text-white bg-[#1E1245]/40 border-white/50";
     }
   };
 
@@ -213,7 +213,7 @@ export function RadialOrbitalTimeline({
   return (
     <div
       ref={containerRef}
-      className="flex h-[min(100vh,920px)] min-h-[min(100vh,920px)] w-full flex-col items-center justify-center overflow-visible bg-black py-12"
+      className="flex h-[min(100vh,920px)] min-h-[min(100vh,920px)] w-full flex-col items-center justify-center overflow-visible bg-[#1E1245] py-12"
       onClick={handleContainerClick}
     >
       <div className="relative flex h-full w-full max-w-7xl items-center justify-center">
@@ -282,27 +282,25 @@ export function RadialOrbitalTimeline({
                         }}
                       />
                       <div
-                        className={`relative flex h-14 w-14 items-center justify-center rounded-full border-2 transition-[transform,box-shadow,background-color] duration-300 md:h-16 md:w-16 ${
+                        className={`relative flex flex-col h-28 w-28 items-center justify-center rounded-full border-2 transition-[transform,box-shadow,background-color] duration-300 md:h-32 md:w-32 ${
                           isExpanded
-                            ? "scale-[1.65] border-white bg-white text-[var(--mk-ink)] shadow-lg shadow-white/30"
+                            ? "scale-[1.65] border-[var(--landing-btn-primary-bg)] bg-white text-[var(--mk-ink)] shadow-lg shadow-[#BD00FF]/30"
                             : isRelated
                               ? "animate-pulse border-white bg-white/50 text-[var(--mk-ink)]"
-                              : "border-white/40 bg-black text-white"
+                              : "border-[var(--landing-accent)]/40 bg-[#1E1245] text-white"
                         }`}
                       >
-                        <Icon size={26} />
-                      </div>
-                      <div
-                        className={`absolute top-16 left-1/2 -translate-x-1/2 text-sm font-semibold tracking-wider whitespace-nowrap md:top-[4.25rem] ${
-                          isExpanded ? "scale-125 text-white" : "text-white/70"
-                        }`}
-                      >
-                        {item.title}
+                        <Icon size={54} />
+                        <span className={`mt-1 text-[10px] font-semibold tracking-wider whitespace-nowrap md:text-xs ${
+                          isExpanded ? "scale-110 text-inherit" : "text-white/80"
+                        }`}>
+                          {item.title}
+                        </span>
                       </div>
 
                       {isExpanded && (
                         <Card
-                          className="pointer-events-auto absolute top-[4.5rem] left-1/2 z-[400] w-72 -translate-x-1/2 overflow-visible border-white/30 bg-black/95 text-white shadow-xl shadow-white/10 backdrop-blur-lg sm:top-20 sm:w-80"
+                          className="pointer-events-auto absolute top-[4.5rem] left-1/2 z-[400] w-72 -translate-x-1/2 overflow-visible border-white/30 bg-[#1E1245]/95 text-white shadow-xl shadow-white/10 backdrop-blur-lg sm:top-20 sm:w-80"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <div className="absolute -top-3 left-1/2 h-3 w-px -translate-x-1/2 bg-white/50" />

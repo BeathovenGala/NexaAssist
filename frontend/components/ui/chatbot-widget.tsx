@@ -26,7 +26,7 @@ export function ChatbotWidget() {
       {/* Widget Circle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative flex h-[5.5rem] w-[5.5rem] items-center justify-center overflow-hidden rounded-full border border-white/20 bg-black shadow-2xl ring-2 ring-indigo-500/50 transition-transform hover:scale-105"
+        className="group relative flex h-[5.5rem] w-[5.5rem] items-center justify-center overflow-hidden rounded-full border border-white/20 bg-[#1E1245] shadow-2xl ring-2 ring-indigo-500/50 transition-transform hover:scale-105"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(99,102,241,0.25),transparent_62%)]" />
         <div className="relative z-10 flex h-full w-full items-center justify-center pointer-events-none">

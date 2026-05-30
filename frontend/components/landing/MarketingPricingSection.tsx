@@ -58,7 +58,7 @@ export function MarketingPricingSection() {
 
   return (
 
-    <section id="pricing" aria-labelledby="pricing-heading" className="marketing-section bg-black">
+    <section id="pricing" aria-labelledby="pricing-heading" className="marketing-section bg-[var(--bg-main)]">
 
       <Pricing
 

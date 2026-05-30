@@ -36,10 +36,12 @@
   --card-foreground: 60 3% 24%;
   --popover: 0 0% 100%;
   --popover-foreground: 60 3% 24%;
-  --primary: 60 3% 24%;
-  --primary-foreground: 0 0% 97%;
-  --secondary: 60 5% 92%;
-  --secondary-foreground: 60 3% 24%;
+  --primary: hsl(180, 90%, 30%);
+  --primary-foreground: #FFFFFF;
+  --secondary: hsl(160, 100%, 75%);
+  --secondary-foreground: #000000;
+  --tertiary: hsl(170, 100%, 80%);
+  --neutral: hsl(200, 100%, 20%);
   --muted: 60 5% 92%;
   --muted-foreground: 60 3% 45%;
   --accent: 60 5% 92%;
@@ -123,28 +125,30 @@ body {
   gap: 0.375rem;
   min-height: 44px;
   border-radius: 0.5rem;
-  border: none;
-  background: var(--na-primary-btn);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 0.625rem 1.125rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--na-primary-btn-text);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: white;
   cursor: pointer;
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
-    filter 0.15s ease;
+    background 0.15s ease;
   -webkit-user-select: none;
   user-select: none;
   touch-action: manipulation;
   z-index: 1;
 }
 .na-btn-primary:hover:not(:disabled) {
-  filter: brightness(1.08);
-  transform: translateY(-1px);
-  box-shadow: 0 0 28px rgba(60, 114, 232, 0.5), 0 4px 16px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 0 25px rgba(46, 212, 199, 0.4),
+    0 0 50px rgba(46, 212, 199, 0.2);
+  transform: translateY(-2px);
 }
 .na-btn-primary:active:not(:disabled) {
   transform: translateY(0);
@@ -223,14 +227,13 @@ body {
 /* Glass morphism — dashboard cards, modals, panels */
 .na-glass-card {
   border-radius: 0.75rem;
-  border: 1px solid rgba(120, 160, 255, 0.18);
-  background: rgba(12, 18, 50, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(20px) saturate(1.35);
   -webkit-backdrop-filter: blur(20px) saturate(1.35);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    0 25px 50px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(60, 114, 232, 0.06);
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 0 40px rgba(46, 212, 199, 0.15);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -239,14 +242,13 @@ body {
 
 .na-card {
   border-radius: 0.75rem;
-  border: 1px solid rgba(120, 160, 255, 0.16);
-  background: rgba(12, 18, 50, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(18px) saturate(1.3);
   -webkit-backdrop-filter: blur(18px) saturate(1.3);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 20px 45px rgba(0, 0, 0, 0.38),
-    0 0 32px rgba(60, 114, 232, 0.05);
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 0 40px rgba(46, 212, 199, 0.15);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -254,11 +256,10 @@ body {
 }
 
 .na-card:hover {
-  border-color: rgba(120, 160, 255, 0.26);
+  border-color: rgba(255, 255, 255, 0.35);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-    0 24px 52px rgba(0, 0, 0, 0.42),
-    0 0 48px rgba(60, 114, 232, 0.1);
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 0 50px rgba(46, 212, 199, 0.25);
 }
 
 .na-modal-backdrop {
@@ -506,7 +507,7 @@ html.na-auth-modal-open #top {
   height: 100dvh;
   z-index: 0;
   overflow: hidden;
-  background: #010308;
+  background: linear-gradient(135deg, #052B4D 0%, #0B5C73 25%, #2ED4C7 60%, #8AF5DF 100%);
   pointer-events: none;
 }
 
@@ -553,11 +554,12 @@ html.na-auth-modal-open #top {
   position: relative;
   z-index: 20;
   border-radius: 28px 28px 0 0;
-  background: linear-gradient(180deg, #0a0e28 0%, #010308 12%);
+  background-color: var(--bg-section-1, #072E4D);
+  background-image: radial-gradient(circle at top right, rgba(46, 212, 199, 0.12), transparent 50%);
   box-shadow:
-    0 -1px 0 rgba(100, 140, 255, 0.15),
-    0 -40px 80px rgba(0, 0, 0, 0.9),
-    0 -2px 0 rgba(80, 120, 255, 0.12);
+    0 -1px 0 rgba(46, 212, 199, 0.25),
+    0 -40px 80px rgba(0, 0, 0, 0.5),
+    0 -2px 0 rgba(46, 212, 199, 0.12);
   margin-top: -2px;
 }
 
@@ -623,31 +625,69 @@ html.na-auth-modal-open #top {
 
 /* ── Landing page (dark / Micro-style) — scoped to .landing-page only ── */
 .landing-page {
-  --landing-bg: #07080c;
-  --landing-bg-elevated: #0c0d12;
-  --landing-nav-bg: rgba(38, 39, 44, 0.92);
-  --landing-nav-border: rgba(255, 255, 255, 0.06);
-  --landing-surface: rgba(22, 24, 32, 0.78);
-  --landing-surface-solid: #161820;
-  --landing-text: #f2f2f3;
-  --landing-muted: #a8a8ae;
-  --landing-border: rgba(255, 255, 255, 0.08);
-  --landing-accent: #8eb4ff;
-  --landing-accent-hover: #b0caff;
-  --landing-btn-primary-bg: #ffffff;
-  --landing-btn-primary-text: #0a0a0a;
+  --primary-50:  #E8FFFB;
+  --primary-100: #C9FFF5;
+  --primary-200: #9FF9EA;
+  --primary-300: #72F0DE;
+  --primary-400: #4EE7D5;
+  --primary-500: #2ED4C7;
+  --primary-600: #1DB5A9;
+  --primary-700: #15918A;
+  --primary-800: #0F6F6D;
+  --primary-900: #0B4E53;
+
+  --bg-main: #031E34;
+  --bg-section-1: #072E4D;
+  --bg-section-2: #0A4766;
+  --bg-section-3: #0D5E7A;
+
+  --landing-bg: var(--bg-main);
+  --landing-bg-elevated: rgba(0, 51, 77, 0.3);
+  --landing-nav-bg: rgba(3, 30, 52, 0.92);
+  --landing-nav-border: rgba(46, 212, 199, 0.15);
+  --landing-surface: rgba(7, 46, 77, 0.5);
+  --landing-text: #ffffff;
+  --landing-muted: rgba(255, 255, 255, 0.65);
+  --landing-border: rgba(255, 255, 255, 0.25);
+  --landing-accent: #7CF8E8;
+  --landing-accent-hover: #4EE7D5;
+  --landing-btn-primary-bg: #2ED4C7;
+  --landing-btn-primary-text: #ffffff;
   --landing-radius: 10px;
   --landing-nav-radius: 8px;
   --landing-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 20px 40px rgba(0, 0, 0, 0.4);
 
   position: relative;
   min-height: 100vh;
-  background-color: var(--landing-bg);
-  background-image:
-    radial-gradient(ellipse 100% 70% at 50% -10%, rgba(30, 50, 120, 0.2), transparent 50%),
-    radial-gradient(ellipse 80% 50% at 100% 50%, rgba(50, 30, 100, 0.06), transparent 45%);
+  background-color: var(--bg-main);
+  background-image: radial-gradient(circle at top right, rgba(46,212,199,0.12), transparent 50%);
+  background-attachment: fixed;
   color: var(--landing-text);
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Ocean Glass Classes */
+.ocean-glass-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 0 40px rgba(46, 212, 199, 0.15);
+}
+
+.ocean-glass-btn {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.ocean-glass-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 25px rgba(46, 212, 199, 0.4), 0 0 50px rgba(46, 212, 199, 0.2);
+  transform: translateY(-2px);
 }
 
 .landing-page .landing-starfield {
@@ -736,9 +776,9 @@ html.na-auth-modal-open #top {
   height: 42%;
   transform: translateX(-42%);
   background:
-    radial-gradient(ellipse 55% 45% at 58% 100%, rgba(255, 255, 255, 0.14), transparent 55%),
-    radial-gradient(ellipse 90% 35% at 50% 100%, rgba(100, 150, 255, 0.2), transparent 62%),
-    radial-gradient(ellipse 120% 25% at 48% 100%, rgba(80, 50, 200, 0.12), transparent 70%);
+    radial-gradient(ellipse 55% 45% at 58% 100%, rgba(255, 0, 122, 0.14), transparent 55%),
+    radial-gradient(ellipse 90% 35% at 50% 100%, rgba(0, 224, 255, 0.2), transparent 62%),
+    radial-gradient(ellipse 120% 25% at 48% 100%, rgba(189, 0, 255, 0.12), transparent 70%);
   filter: blur(24px);
   mix-blend-mode: screen;
   animation: landing-beam-scatter 6s ease-in-out infinite;
@@ -769,8 +809,8 @@ html.na-auth-modal-open #top {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(7, 8, 12, 0.94) 0%, rgba(7, 8, 12, 0.35) 38%, transparent 62%),
-    linear-gradient(180deg, rgba(7, 8, 12, 0.5) 0%, transparent 22%, rgba(7, 8, 12, 0.4) 100%);
+    linear-gradient(90deg, rgba(3, 30, 52, 0.94) 0%, rgba(3, 30, 52, 0.35) 38%, transparent 62%),
+    linear-gradient(180deg, rgba(3, 30, 52, 0.5) 0%, transparent 22%, rgba(3, 30, 52, 0.4) 100%);
 }
 
 @keyframes landing-beam-scatter {
@@ -790,6 +830,8 @@ html.na-auth-modal-open #top {
   position: relative;
   z-index: 3;
   background: var(--landing-bg-elevated);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   box-shadow: 0 -32px 64px rgba(0, 0, 0, 0.45);
 }
 
@@ -1002,9 +1044,9 @@ html.na-auth-modal-open #top {
 }
 
 .landing-page .landing-pricing-card--featured {
-  border-color: rgba(142, 180, 255, 0.35);
-  background: linear-gradient(165deg, rgba(30, 40, 70, 0.55) 0%, rgba(18, 20, 28, 0.9) 100%);
-  box-shadow: 0 0 0 1px rgba(142, 180, 255, 0.12) inset;
+  border-color: rgba(46, 212, 199, 0.35);
+  background: linear-gradient(165deg, rgba(7, 46, 77, 0.55) 0%, rgba(3, 30, 52, 0.9) 100%);
+  box-shadow: 0 0 0 1px rgba(46, 212, 199, 0.12) inset;
 }
 
 .landing-page .landing-scroll-progress {
@@ -1103,25 +1145,27 @@ html.na-auth-modal-open #top {
   justify-content: center;
   min-height: 44px;
   border-radius: 9999px;
-  border: none;
-  background: var(--landing-btn-primary-bg);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(20px);
   padding: 0.625rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--landing-btn-primary-text);
+  color: white;
   cursor: pointer;
   transition:
-    background 0.15s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+    background 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   touch-action: manipulation;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 }
 
 .landing-page .landing-btn-primary:hover:not(:disabled) {
-  background: #f0f0f0;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 0 25px rgba(46, 212, 199, 0.4),
+    0 0 50px rgba(46, 212, 199, 0.2);
+  transform: translateY(-2px);
 }
 
 .landing-page .landing-btn-secondary {
@@ -1288,22 +1332,24 @@ html.na-auth-modal-open #top {
 
 /* ── Marketing homepage (dark immersive) ── */
 .marketing-page {
-  --mk-bg: #000000;
-  --mk-bg-elevated: #0a0a0a;
-  --mk-surface: #111111;
-  --mk-panel: #000000;
-  --mk-frost: #f5f5f5;
-  --mk-ink: #f5f5f5;
-  --mk-body: #f5f5f5;
-  --mk-muted: rgba(255, 255, 255, 0.55);
-  --mk-muted-bg: #111111;
-  --mk-border: rgba(255, 255, 255, 0.08);
-  --mk-gamma: #0a0a0a;
-  --mk-accent: #ffffff;
+  --mk-bg: #031E34;
+  --mk-bg-elevated: #072E4D;
+  --mk-surface: rgba(255, 255, 255, 0.12);
+  --mk-panel: #0A4766;
+  --mk-frost: #ffffff;
+  --mk-ink: #ffffff;
+  --mk-body: rgba(255, 255, 255, 0.85);
+  --mk-muted: rgba(255, 255, 255, 0.65);
+  --mk-muted-bg: rgba(255, 255, 255, 0.05);
+  --mk-border: rgba(255, 255, 255, 0.25);
+  --mk-gamma: #0D5E7A;
+  --mk-accent: #7CF8E8;
 
   position: relative;
   min-height: 100vh;
-  background: var(--mk-bg);
+  background-color: var(--mk-bg);
+  background-image: radial-gradient(circle at top right, rgba(46, 212, 199, 0.12), transparent 50%);
+  background-attachment: fixed;
   color: var(--mk-text, var(--mk-body));
   font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
 }
@@ -1444,8 +1490,8 @@ html.na-auth-modal-open #top {
 
 .marketing-hero-shader-fallback {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(255, 255, 255, 0.08), transparent),
-    linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(46, 212, 199, 0.15), transparent),
+    linear-gradient(180deg, #072E4D 0%, #031E34 100%);
 }
 
 .marketing-scroll-panel {
@@ -1499,37 +1545,38 @@ html.na-auth-modal-open #top {
 
 /* ── Dashboard shell — matches marketing dark / glass theme ── */
 .dashboard-shell {
-  --na-bg: #000000;
-  --na-bg-deep: #0a0a0f;
-  --na-surface: rgba(17, 17, 20, 0.92);
-  --na-surface-2: rgba(255, 255, 255, 0.06);
-  --na-border: rgba(255, 255, 255, 0.12);
-  --na-border-subtle: rgba(255, 255, 255, 0.07);
-  --na-text: #f5f5f5;
-  --na-muted: rgba(255, 255, 255, 0.52);
-  --na-accent: #c4b5fd;
-  --na-accent-solid: #a78bfa;
+  --na-bg: #031E34;
+  --na-bg-deep: #072E4D;
+  --na-surface: rgba(255, 255, 255, 0.12);
+  --na-surface-2: rgba(255, 255, 255, 0.18);
+  --na-border: rgba(255, 255, 255, 0.25);
+  --na-border-subtle: rgba(255, 255, 255, 0.1);
+  --na-text: #ffffff;
+  --na-muted: rgba(255, 255, 255, 0.65);
+  --na-accent: #7CF8E8;
+  --na-accent-solid: #4EE7D5;
   --na-cyan: #38bdf8;
-  --na-primary-btn: #ffffff;
-  --na-primary-btn-text: #0a0a0f;
-  --na-header-bg: rgba(0, 0, 0, 0.88);
+  --na-primary-btn: #2ED4C7;
+  --na-primary-btn-text: #ffffff;
+  --na-header-bg: rgba(3, 30, 52, 0.88);
 
-  --background: 0 0% 4%;
-  --foreground: 0 0% 96%;
-  --card: 0 0% 6%;
-  --card-foreground: 0 0% 96%;
-  --border: 0 0% 14%;
-  --muted: 0 0% 12%;
-  --muted-foreground: 0 0% 55%;
+  --background: 207 89% 11%;
+  --foreground: 0 0% 100%;
+  --card: 207 83% 16%;
+  --card-foreground: 0 0% 100%;
+  --border: 0 0% 100% / 0.25;
+  --muted: 0 0% 100% / 0.15;
+  --muted-foreground: 0 0% 100% / 0.65;
 }
 
 .dashboard-shell .na-card {
-  border-color: rgba(255, 255, 255, 0.1);
-  background: rgba(12, 12, 18, 0.72);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    0 20px 45px rgba(0, 0, 0, 0.55),
-    0 0 40px rgba(139, 92, 246, 0.06);
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 0 40px rgba(46, 212, 199, 0.15);
 }
 
 .dashboard-shell .na-nav-link.active {

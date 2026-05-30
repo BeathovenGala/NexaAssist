@@ -24,6 +24,8 @@ const WebGLShader = dynamic(
   { ssr: false },
 );
 
+import { Warp } from "@paper-design/shaders-react";
+
 const transitionVariants = {
   item: {
     hidden: {
@@ -91,19 +93,33 @@ export function MarketingHero() {
     <section
       id="hero"
       aria-labelledby="hero-heading"
-      className="relative w-full overflow-hidden bg-black"
+      className="relative w-full overflow-hidden bg-transparent"
     >
       <div className="absolute inset-0 z-0">
+        <div className="absolute -top-[10%] -left-[10%] h-[40rem] w-[40rem] rounded-full bg-[hsl(200,100%,20%)] opacity-25 blur-[120px]" />
+        <div className="absolute -bottom-[10%] -right-[10%] h-[40rem] w-[40rem] rounded-full bg-[hsl(160,100%,75%)] opacity-25 blur-[120px]" />
+        <div className="absolute top-[40%] left-[60%] h-[30rem] w-[30rem] rounded-full bg-[hsl(180,90%,30%)] opacity-20 blur-[100px]" />
         {showWebGLShader ? (
-          <WebGLShader className="h-full w-full opacity-45" />
+          <div className="absolute inset-0 opacity-100 pointer-events-none">
+            <Warp
+              style={{ height: "100%", width: "100%" }}
+              proportion={0.45}
+              softness={1}
+              distortion={0.25}
+              swirl={0.8}
+              swirlIterations={10}
+              shape="checks"
+              shapeScale={0.1}
+              scale={1}
+              rotation={0}
+              speed={1}
+              colors={["hsl(200, 100%, 20%)", "hsl(160, 100%, 75%)", "hsl(180, 90%, 30%)", "hsl(170, 100%, 80%)"]}
+            />
+          </div>
         ) : null}
         {showShaderFallback ? (
           <WebGLFallback className="h-full w-full" />
         ) : null}
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black"
-          aria-hidden
-        />
       </div>
 
       <div
@@ -117,11 +133,6 @@ export function MarketingHero() {
       <SpotlightAceternity className="-top-40 left-0 md:-top-20 md:left-60" fill="white" />
 
       <div className="relative z-10 pt-24 md:pt-32">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_0%,transparent_0%,black_70%)]"
-        />
-
         <div className="marketing-container px-6">
           <div className="mx-auto max-w-4xl text-center">
             <AnimatedGroup variants={transitionVariants}>
@@ -153,28 +164,26 @@ export function MarketingHero() {
             </AnimatedGroup>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <AuthModalTrigger modal="register" star size="lg">
+              <AuthModalTrigger modal="register" star={false} className="px-8 py-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-white font-medium hover:bg-white/30 transition-all duration-300 hover:scale-105">
                 {HERO.ctas.primary.label}
               </AuthModalTrigger>
-              <AuthModalTrigger modal="login" star size="lg" lightColor="#c4b5fd">
+              <AuthModalTrigger modal="login" star={false} className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white font-medium hover:bg-white/20 transition-all duration-300 hover:scale-105">
                 {HERO.ctas.secondary.label}
               </AuthModalTrigger>
-              <StarButton
-                lightColor="#c4b5fd"
-                className="min-w-[8.5rem] rounded-3xl h-12 px-8 text-base"
+              <button
+                className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white font-medium hover:bg-white/20 transition-all duration-300 hover:scale-105"
                 onClick={handleExploreClick}
                 disabled={exploreLoading}
               >
                 Explore Product
-              </StarButton>
-              <StarButton
-                lightColor="#6ee7b7"
-                className="min-w-[8.5rem] rounded-3xl h-12 px-8 text-base"
+              </button>
+              <button
+                className="px-8 py-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-white font-medium hover:bg-white/30 transition-all duration-300 hover:scale-105"
                 onClick={handleDemoClick}
                 disabled={exploreLoading}
               >
                 Try Demo Now
-              </StarButton>
+              </button>
             </div>
           </div>
         </div>
@@ -194,11 +203,7 @@ export function MarketingHero() {
           className="marketing-container relative mt-10 px-4 sm:mt-14 md:mt-16"
         >
           <div className="relative mx-auto max-w-6xl overflow-hidden px-1 sm:px-2">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-transparent from-30% to-black"
-            />
-            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[rgba(8,8,12,0.9)] p-2 shadow-2xl shadow-black/50 ring-1 ring-white/10 sm:p-3 md:rounded-3xl md:p-4">
+            <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 backdrop-blur-lg p-2 shadow-2xl shadow-teal-900/40 ring-1 ring-white/10 sm:p-3 md:rounded-3xl md:p-4">
               <div className="overflow-hidden rounded-xl border border-white/[0.06] md:rounded-2xl">
                 <HeroDashboardPreview />
               </div>
@@ -206,11 +211,6 @@ export function MarketingHero() {
           </div>
         </AnimatedGroup>
       </div>
-
-      <div
-        className="pointer-events-none relative z-10 h-24 bg-gradient-to-t from-black to-transparent"
-        aria-hidden
-      />
     </section>
   );
 }
