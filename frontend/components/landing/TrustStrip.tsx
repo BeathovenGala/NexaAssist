@@ -8,7 +8,7 @@ export function TrustStrip() {
 
   return (
 
-    <section className="border-y border-white/10 bg-black py-10">
+    <section className="border-y border-white/10 bg-[var(--bg-section-1)] py-10">
 
       <div className="marketing-container">
 

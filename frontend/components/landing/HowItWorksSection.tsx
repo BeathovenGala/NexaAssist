@@ -36,7 +36,7 @@ export function HowItWorksSection() {
 
   return (
 
-    <section aria-labelledby="how-heading" className="marketing-section bg-black">
+    <section aria-labelledby="how-heading" className="marketing-section bg-[var(--bg-section-1)]">
 
       <div className="marketing-container">
 

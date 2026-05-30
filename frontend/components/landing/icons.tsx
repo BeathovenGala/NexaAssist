@@ -1,4 +1,5 @@
 import type { ReactElement, ReactNode, SVGProps } from "react";
+import Image from "next/image";
 
 type IconProps = SVGProps<SVGSVGElement> & { size?: number };
 
@@ -59,9 +60,13 @@ export function IconMegaphone(props: IconProps) {
 
 export function IconMessage(props: IconProps) {
   return (
-    <IconBase {...props}>
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </IconBase>
+    <Image
+      src="/newicons/whatsapp.jpg"
+      alt="WhatsApp"
+      width={props.size || 20}
+      height={props.size || 20}
+      className="object-contain"
+    />
   );
 }
 

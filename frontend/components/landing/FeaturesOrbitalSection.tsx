@@ -1,14 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import {
-  BarChart3,
-  Calendar,
-  Megaphone,
-  MessageCircle,
-  Package,
-  Sparkles,
-} from "lucide-react";
+import Image from "next/image";
 
 import type { TimelineItem } from "@/components/ui/radial-orbital-timeline";
 import { OrbitTimelinePlaceholder } from "@/components/ui/orbit-timeline-placeholder";
@@ -25,13 +18,17 @@ const RadialOrbitalTimeline = dynamic(
   },
 );
 
+const CustomIcon = ({ src, alt, size }: { src: string; alt: string; size?: number }) => (
+  <Image src={src} alt={alt} width={size || 48} height={size || 48} className="object-contain" />
+);
+
 const ICON_MAP = {
-  calendar: Calendar,
-  box: Package,
-  sparkles: Sparkles,
-  megaphone: Megaphone,
-  message: MessageCircle,
-  chart: BarChart3,
+  calendar: (props: any) => <CustomIcon src="/newicons/appointment.png" alt="calendar" {...props} />,
+  box: (props: any) => <CustomIcon src="/newicons/inventory_2897785.png" alt="inventory" {...props} />,
+  sparkles: (props: any) => <CustomIcon src="/newicons/robot_10935645.png" alt="robot" {...props} />,
+  megaphone: (props: any) => <CustomIcon src="/newicons/announcments.png" alt="announcements" {...props} />,
+  message: (props: any) => <CustomIcon src="/newicons/whatsapp.jpg" alt="whatsapp" {...props} />,
+  chart: (props: any) => <CustomIcon src="/newicons/analytics.png" alt="analytics" {...props} />,
 } as const;
 
 function buildTimelineData(): TimelineItem[] {
@@ -56,7 +53,7 @@ export function FeaturesOrbitalSection() {
     <section
       id="orbit"
       aria-labelledby="features-heading"
-      className="marketing-section min-h-[90vh] bg-black"
+      className="marketing-section min-h-[90vh] bg-[var(--bg-section-2)]"
     >
       <div className="marketing-container mb-10 text-center">
         <MarketingReveal>

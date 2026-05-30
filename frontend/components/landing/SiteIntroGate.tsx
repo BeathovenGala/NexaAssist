@@ -15,7 +15,7 @@ const SplineWarmup = dynamic(
 );
 
 // Increase auto-dismiss so users can read the intro comfortably
-const AUTO_DISMISS_MS = 10000;
+const AUTO_DISMISS_MS = 2500;
 
 /**
  * Intro gate that auto-dismisses after timeout or on click.
@@ -70,7 +70,7 @@ export function SiteIntroGate({ children }: { children: React.ReactNode }) {
       {showOverlay && (
         <div
           className={cn(
-            "fixed inset-0 z-[10000] overflow-hidden bg-black will-change-transform",
+            "fixed inset-0 z-[10000] overflow-hidden bg-teal-950/80 backdrop-blur-3xl will-change-transform",
             exiting
               ? cn(
                   "pointer-events-none transition-all ease-in",

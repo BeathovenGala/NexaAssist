@@ -33,7 +33,7 @@ export function SignInCard({
       className="w-full"
     >
     <GlowCard customSize glowColor="purple" className={cn("w-full max-w-md p-0", className)}>
-      <GradientGlowFrame className="w-full" innerClassName="bg-black/90 p-6 sm:p-8">
+      <GradientGlowFrame className="w-full" innerClassName="bg-[#1E1245]/90 p-6 sm:p-8">
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="min-w-0">
             <h2 className="text-xl font-semibold tracking-tight text-white">{title}</h2>

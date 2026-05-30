@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Fraunces, JetBrains_Mono, Sora } from "next/font/google";
+import { Outfit, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
 
-const sora = Sora({
-  variable: "--font-sora",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-sora", // Keeping variable name for compatibility or we can change it. Let's keep variable name to avoid breaking things, or wait, I should change the CSS as well. Let's keep it clean.
   subsets: ["latin"],
 });
 
-const fraunces = Fraunces({
+const outfit = Outfit({
   variable: "--font-fraunces",
   subsets: ["latin"],
 });
@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${sora.variable} ${fraunces.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${outfit.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <Providers>{children}</Providers>
       </body>

@@ -32,7 +32,7 @@ export function FinalCta() {
   const onLeave = () => setTilt({ rx: 0, ry: 0 });
 
   return (
-    <section className="marketing-section overflow-hidden bg-black pb-28 pt-8">
+    <section className="marketing-section overflow-hidden bg-[var(--bg-section-3)] pb-28 pt-8">
       <div className="marketing-container" style={{ perspective: "1200px" }}>
         <MarketingReveal>
           <div
@@ -52,7 +52,7 @@ export function FinalCta() {
               className="pointer-events-none absolute -inset-4 rounded-[2rem] opacity-70 blur-2xl"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(139,92,246,0.35), rgba(56,189,248,0.2), rgba(167,139,250,0.15))",
+                  "linear-gradient(135deg, rgba(46,212,199,0.35), rgba(78,231,213,0.2), rgba(29,181,169,0.15))",
                 transform: "translateZ(-40px)",
               }}
               aria-hidden
@@ -60,9 +60,7 @@ export function FinalCta() {
 
             <div
               className={cn(
-                "relative overflow-hidden rounded-[1.75rem] border border-white/15 p-10 text-center sm:p-12 md:p-14",
-                "bg-gradient-to-br from-[#12121a] via-[#0a0a12] to-[#050508]",
-                "shadow-[0_25px_80px_-20px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.06)_inset,0_40px_100px_-30px_rgba(139,92,246,0.25)]",
+                "ocean-glass-card relative overflow-hidden rounded-[1.75rem] p-10 text-center sm:p-12 md:p-14",
               )}
               style={{ transform: "translateZ(24px)" }}
             >
@@ -71,7 +69,7 @@ export function FinalCta() {
                 aria-hidden
               />
               <div
-                className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[80%] -translate-x-1/2 rounded-full bg-violet-500/20 blur-3xl"
+                className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[80%] -translate-x-1/2 rounded-full bg-teal-500/20 blur-3xl"
                 aria-hidden
               />
 
@@ -92,10 +90,10 @@ export function FinalCta() {
                 className="mt-10 flex flex-wrap justify-center gap-4"
                 style={{ transform: "translateZ(40px)" }}
               >
-                <AuthModalTrigger modal="register" star>
+                <AuthModalTrigger modal="register" className="ocean-glass-btn flex h-11 items-center justify-center rounded-3xl px-7 text-sm font-semibold">
                   {FINAL_CTA.primary.label}
                 </AuthModalTrigger>
-                <AuthModalTrigger modal="login" star lightColor="#c4b5fd">
+                <AuthModalTrigger modal="login" className="ocean-glass-btn flex h-11 items-center justify-center rounded-3xl px-7 text-sm font-semibold">
                   {FINAL_CTA.secondary.label}
                 </AuthModalTrigger>
               </div>
@@ -117,7 +115,7 @@ export function FinalCta() {
             </div>
 
             <div
-              className="pointer-events-none absolute -bottom-6 left-[8%] right-[8%] h-8 rounded-[100%] bg-black/80 blur-xl"
+              className="pointer-events-none absolute -bottom-6 left-[8%] right-[8%] h-8 rounded-[100%] bg-teal-900/40 blur-xl"
               style={{ transform: "translateZ(-20px) rotateX(90deg)" }}
               aria-hidden
             />

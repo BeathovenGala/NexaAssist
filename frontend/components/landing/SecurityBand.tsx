@@ -18,7 +18,7 @@ export function SecurityBand() {
     <section
       id="security"
       aria-labelledby="security-heading"
-      className="relative overflow-hidden bg-black py-20 md:py-28"
+      className="relative overflow-hidden bg-[var(--bg-section-2)] py-20 md:py-28"
     >
       <div
         className="pointer-events-none absolute inset-0"
@@ -67,7 +67,7 @@ export function SecurityBand() {
                   >
                     <div
                       className={cn(
-                        "mb-4 flex h-11 w-11 items-center justify-center rounded-xl border bg-black/40 ring-1",
+                        "mb-4 flex h-11 w-11 items-center justify-center rounded-xl border bg-[#1E1245]/40 ring-1",
                         meta.ring,
                       )}
                     >

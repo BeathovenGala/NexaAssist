@@ -45,7 +45,7 @@ export function AnimeNavBar({ items, className, defaultActive }: AnimeNavBarProp
     <div className={cn("pointer-events-none fixed top-5 left-0 right-0 z-[9999]", className)}>
       <div className="flex justify-center pt-2">
         <motion.div
-          className="pointer-events-auto relative flex items-center gap-1 rounded-full border border-white/10 bg-black/50 px-2 py-2 shadow-lg backdrop-blur-lg"
+          className="pointer-events-auto relative flex items-center gap-1 rounded-full border border-white/10 bg-[#1E1245]/50 px-2 py-2 shadow-lg backdrop-blur-lg"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{
@@ -148,7 +148,7 @@ export function AnimeNavBar({ items, className, defaultActive }: AnimeNavBarProp
                         }
                       >
                         <motion.div
-                          className="absolute h-2 w-2 rounded-full bg-black"
+                          className="absolute h-2 w-2 rounded-full bg-[#1E1245]"
                           style={{ left: "25%", top: "40%" }}
                           animate={
                             hoveredTab
@@ -160,7 +160,7 @@ export function AnimeNavBar({ items, className, defaultActive }: AnimeNavBarProp
                           }
                         />
                         <motion.div
-                          className="absolute h-2 w-2 rounded-full bg-black"
+                          className="absolute h-2 w-2 rounded-full bg-[#1E1245]"
                           style={{ right: "25%", top: "40%" }}
                           animate={
                             hoveredTab

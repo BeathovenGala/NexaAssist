@@ -10,7 +10,7 @@ export function SiteFooter() {
 
   return (
 
-    <footer className="border-t border-white/10 bg-black py-14">
+    <footer className="border-t border-white/10 bg-[var(--bg-main)] py-14">
 
       <div className="marketing-container">
 

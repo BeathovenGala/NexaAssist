@@ -17,8 +17,7 @@ export function GradientGlowFrame({
   innerClassName,
 }: GradientGlowFrameProps) {
   return (
-    <div className={cn("relative overflow-hidden rounded-[28px]", className)}>
-      <div className="absolute inset-0 z-0 bg-black" aria-hidden />
+    <div className={cn("ocean-glass-card relative overflow-hidden rounded-[28px]", className)}>
       <div
         className="pointer-events-none absolute inset-0 z-[1] opacity-25 mix-blend-overlay"
         style={{
@@ -30,19 +29,10 @@ export function GradientGlowFrame({
         className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-2/3"
         style={{
           background: `
-            radial-gradient(ellipse at bottom right, rgba(172, 92, 255, 0.45) -10%, transparent 70%),
-            radial-gradient(ellipse at bottom left, rgba(56, 189, 248, 0.35) -10%, transparent 70%)
+            radial-gradient(ellipse at bottom right, rgba(46, 212, 199, 0.45) -10%, transparent 70%),
+            radial-gradient(ellipse at bottom left, rgba(78, 231, 213, 0.35) -10%, transparent 70%)
           `,
           filter: "blur(40px)",
-        }}
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-1/2"
-        style={{
-          background:
-            "radial-gradient(circle at bottom center, rgba(161, 58, 229, 0.35) -20%, transparent 60%)",
-          filter: "blur(45px)",
         }}
         aria-hidden
       />
@@ -52,13 +42,13 @@ export function GradientGlowFrame({
           background:
             "linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.05) 100%)",
           boxShadow:
-            "0 0 20px 3px rgba(172, 92, 255, 0.5), 0 0 30px 5px rgba(138, 58, 185, 0.35), 0 0 40px 7px rgba(56, 189, 248, 0.25)",
+            "0 0 20px 3px rgba(46, 212, 199, 0.5), 0 0 30px 5px rgba(78, 231, 213, 0.35)",
         }}
         aria-hidden
       />
       <div
         className={cn(
-          "relative z-10 h-full w-full overflow-hidden rounded-[26px] border border-white/10 bg-black/80",
+          "relative z-10 h-full w-full overflow-hidden rounded-[26px]",
           innerClassName,
         )}
       >
